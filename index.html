@@ -1,23 +1,75 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Simple Chat App</title>
-  <link rel="stylesheet" href="styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat App</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <div id="app">
-    <input id="email" type="text" placeholder="Email">
-    <input id="password" type="password" placeholder="Password">
-    <button id="signUp">Sign Up</button>
-    <button id="signIn">Sign In</button>
-    <button id="signOut">Sign Out</button>
-    <div class="messages" id="messages"></div>
-    <input id="messageInput" type="text" placeholder="Type your message...">
-    <button id="sendMessage">Send</button>
-  </div>
-  <script type="module" src="firebaseConfig.js"></script>
-  <script type="module" src="script.js"></script>
+    <div class="auth-container">
+        <h2>Sign Up / Sign In</h2>
+        <input type="email" id="email" placeholder="Email">
+        <input type="password" id="password" placeholder="Password">
+        <button id="signUp">Sign Up</button>
+        <button id="signIn">Sign In</button>
+        <button id="signOut">Sign Out</button>
+    </div>
+    <div class="chat-container">
+        <h2>Chat</h2>
+        <div id="messages"></div>
+        <input type="text" id="messageInput" placeholder="Type a message">
+        <button id="sendMessage">Send</button>
+    </div>
+
+    <!-- Include Firebase SDKs from CDN -->
+    <script type="module">
+        import { app, auth, database } from './firebaseConfig.js';
+        import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js';
+        import { ref, push, onChildAdded, serverTimestamp } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js';
+
+        const emailInput = document.getElementById('email');
+        const passwordInput = document.getElementById('password');
+        const signUpButton = document.getElementById('signUp');
+        const signInButton = document.getElementById('signIn');
+        const signOutButton = document.getElementById('signOut');
+        const messageInput = document.getElementById('messageInput');
+        const sendMessageButton = document.getElementById('sendMessage');
+        const messagesDiv = document.getElementById('messages');
+
+        signUpButton.addEventListener('click', () => {
+            createUserWithEmailAndPassword(auth, emailInput.value, passwordInput.value)
+                .catch(error => console.error('Error signing up:', error));
+        });
+
+        signInButton.addEventListener('click', () => {
+            signInWithEmailAndPassword(auth, emailInput.value, passwordInput.value)
+                .catch(error => console.error('Error signing in:', error));
+        });
+
+        signOutButton.addEventListener('click', () => {
+            signOut(auth)
+                .catch(error => console.error('Error signing out:', error));
+        });
+
+        sendMessageButton.addEventListener('click', () => {
+            const userId = auth.currentUser.uid;
+            const messageRef = ref(database, 'messages');
+            push(messageRef, {
+                text: messageInput.value,
+                userId,
+                timestamp: serverTimestamp()
+            }).then(() => {
+                messageInput.value = '';
+            }).catch(error => console.error('Error sending message:', error));
+        });
+
+        onChildAdded(ref(database, 'messages'), snapshot => {
+            const msg = snapshot.val();
+            const msgDiv = document.createElement('div');
+            msgDiv.textContent = `${msg.userId}: ${msg.text}`;
+            messagesDiv.appendChild(msgDiv);
+        });
+    </script>
 </body>
 </html>
