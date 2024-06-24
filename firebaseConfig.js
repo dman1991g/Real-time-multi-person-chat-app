@@ -5,13 +5,14 @@ import { getDatabase } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-d
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "your-project-id.firebaseapp.com",
-  databaseURL: "https://your-project-id.firebaseio.com",
-  projectId: "your-project-id",
-  storageBucket: "your-project-id.appspot.com",
-  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-  appId: "YOUR_APP_ID"
+  apiKey: "AIzaSyCNU5uJ9YkR3F3BtghpRwIJ3TR6FaUFxTM",
+  authDomain: "real-time-chat-app-b5633.firebaseapp.com",
+  databaseURL: "https://real-time-chat-app-b5633-default-rtdb.firebaseio.com",
+  projectId: "real-time-chat-app-b5633",
+  storageBucket: "real-time-chat-app-b5633.appspot.com",
+  messagingSenderId: "598824406460",
+  appId: "1:598824406460:web:69dd525b78ada125be2fb9",
+  measurementId: "G-0RBBS9DMW7"
 };
 
 // Initialize Firebase
@@ -19,4 +20,4 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const database = getDatabase(app);
 
-export { app, auth, database }; 
+export { app, auth, database };
