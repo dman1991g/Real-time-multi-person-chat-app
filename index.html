@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Chat App</title>
+    <title>Chat App</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -13,6 +13,13 @@
         <input type="password" id="password" placeholder="Password">
         <button id="signUp">Sign Up</button>
         <button id="signIn">Sign In</button>
+        <button id="signOut">Sign Out</button>
+    </div>
+    <div class="chat-container">
+        <h2>Chat</h2>
+        <div id="messages"></div>
+        <input type="text" id="messageInput" placeholder="Type a message">
+        <button id="sendMessage">Send</button>
     </div>
 
     <!-- Include Firebase SDKs from CDN -->
@@ -24,6 +31,6 @@
     <script src="firebaseConfig.js"></script>
     
     <!-- Include your custom JavaScript file -->
-    <script src="loginScript.js" type="module"></script>
+    <script src="script.js" type="module"></script>
 </body>
 </html>
