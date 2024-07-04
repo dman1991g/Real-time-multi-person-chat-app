@@ -1,35 +1,42 @@
-// chat.js
-import { auth, database } from './firebaseConfig.js';  // Import Firebase configuration
+// Import Firebase functions
+import { auth, database } from './firebaseConfig.js';
+import { signOut } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js';
 import { ref, push, onChildAdded, serverTimestamp } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js';
 
-// Elements from the chat page
+// Get DOM elements
 const messageInput = document.getElementById('messageInput');
 const sendMessageButton = document.getElementById('sendMessage');
 const messagesDiv = document.getElementById('messages');
+const signOutButton = document.getElementById('signOut');
 
-// Send Message Function
+// Send a message
 sendMessageButton.addEventListener('click', () => {
-    const userId = auth.currentUser.uid;  // Get current user's ID
-    const messageText = messageInput.value;
-
-    if (messageText.trim() !== '') {  // Check if message input is not empty
+    if (messageInput.value.trim() !== '') {
+        const userId = auth.currentUser ? auth.currentUser.uid : 'anonymous';
         const messageRef = ref(database, 'messages');
         push(messageRef, {
-            text: messageText,
+            text: messageInput.value,
             userId,
             timestamp: serverTimestamp()
         }).then(() => {
-            messageInput.value = '';  // Clear input field after sending
-        }).catch(error => {
-            console.error('Error sending message:', error);
-        });
+            messageInput.value = ''; // Clear input field
+        }).catch(error => console.error('Error sending message:', error));
     }
 });
 
-// Display Messages Function
+// Display messages
 onChildAdded(ref(database, 'messages'), snapshot => {
     const msg = snapshot.val();
     const msgDiv = document.createElement('div');
     msgDiv.textContent = `${msg.userId}: ${msg.text}`;
     messagesDiv.appendChild(msgDiv);
+});
+
+// Sign out user
+signOutButton.addEventListener('click', () => {
+    signOut(auth)
+        .then(() => {
+            window.location.href = 'index.html'; // Redirect to sign-in page
+        })
+        .catch(error => console.error('Error signing out:', error));
 });
