@@ -2,22 +2,10 @@ import { app, auth, database } from './firebaseConfig.js';
 import { signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js';
 import { ref, push, onChildAdded, serverTimestamp } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js';
 
-// Element references
 const messageInput = document.getElementById('messageInput');
 const sendMessageButton = document.getElementById('sendMessage');
 const messagesDiv = document.getElementById('messages');
-const emojiButton = document.getElementById('emojiButton');
 const signOutButton = document.getElementById('signOut');
-
-// Initialize the Emoji Button
-const picker = new EmojiButton();
-emojiButton.addEventListener('click', () => {
-    picker.togglePicker(emojiButton);
-});
-
-picker.on('emoji', emoji => {
-    messageInput.value += emoji;
-});
 
 // Send message
 sendMessageButton.addEventListener('click', () => {
