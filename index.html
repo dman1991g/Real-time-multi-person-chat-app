@@ -3,22 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign In</title>
+    <title>Sign In / Sign Up</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="auth-container">
         <h2>Sign Up / Sign In</h2>
+        <input type="text" id="username" placeholder="Username"> <!-- Added username field -->
         <input type="email" id="email" placeholder="Email">
         <input type="password" id="password" placeholder="Password">
         <button id="signUp">Sign Up</button>
         <button id="signIn">Sign In</button>
+        <button id="signOut">Sign Out</button>
     </div>
-
-    <!-- Include Firebase SDKs and firebaseConfig -->
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
-    <script type="module" src="firebaseConfig.js"></script>
-    <script type="module" src="signin.js"></script>
+    <script type="module" src="auth.js"></script>
 </body>
 </html>
