@@ -9,16 +9,6 @@ const messagesDiv = document.getElementById('messages');
 const signOutButton = document.getElementById('signOut');
 const emojiButton = document.getElementById('emojiButton');
 
-// Initialize Emoji Picker
-const emojiPicker = new EmojiButton();
-
-emojiButton.addEventListener('click', () => {
-    emojiPicker.togglePicker();
-});
-
-emojiPicker.on('emoji', (emoji) => {
-    messageInput.value += emoji;
-});
 
 // Send Message
 sendMessageButton.addEventListener('click', () => {
