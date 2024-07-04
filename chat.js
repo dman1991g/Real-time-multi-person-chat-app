@@ -1,42 +1,35 @@
 // chat.js
-import { auth, database } from './firebaseConfig.js';
-import { ref, push, onChildAdded, serverTimestamp, get } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js';
-import { signOut } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js';
+import { auth, database } from './firebaseConfig.js';  // Import Firebase configuration
+import { ref, push, onChildAdded, serverTimestamp } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js';
 
+// Elements from the chat page
 const messageInput = document.getElementById('messageInput');
 const sendMessageButton = document.getElementById('sendMessage');
 const messagesDiv = document.getElementById('messages');
-const signOutButton = document.getElementById('signOut');
 
-// Send Message
+// Send Message Function
 sendMessageButton.addEventListener('click', () => {
-    if (messageInput.value.trim() !== '') {
-        const userId = auth.currentUser ? auth.currentUser.uid : 'anonymous';
+    const userId = auth.currentUser.uid;  // Get current user's ID
+    const messageText = messageInput.value;
+
+    if (messageText.trim() !== '') {  // Check if message input is not empty
         const messageRef = ref(database, 'messages');
         push(messageRef, {
-            text: messageInput.value,
+            text: messageText,
             userId,
             timestamp: serverTimestamp()
         }).then(() => {
-            messageInput.value = '';
-        }).catch(error => console.error('Error sending message:', error));
+            messageInput.value = '';  // Clear input field after sending
+        }).catch(error => {
+            console.error('Error sending message:', error);
+        });
     }
 });
 
-// Display Messages
+// Display Messages Function
 onChildAdded(ref(database, 'messages'), snapshot => {
     const msg = snapshot.val();
     const msgDiv = document.createElement('div');
-    get(ref(database, 'users/' + msg.userId)).then(userSnapshot => {
-        const username = userSnapshot.val() ? userSnapshot.val().username : 'Unknown';
-        msgDiv.textContent = `${username}: ${msg.text}`;
-        messagesDiv.appendChild(msgDiv);
-    });
-});
-
-// Sign Out
-signOutButton.addEventListener('click', () => {
-    signOut(auth)
-        .then(() => window.location.href = 'index.html')
-        .catch(error => console.error('Error signing out:', error));
+    msgDiv.textContent = `${msg.userId}: ${msg.text}`;
+    messagesDiv.appendChild(msgDiv);
 });
