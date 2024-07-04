@@ -38,7 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
         signOut(auth)
             .then(() => {
                 console.log('User signed out');
-                window.location.href = 'signin.html';
+                window.location.href = 'index.html';
             })
             .catch(error => {
                 console.error('Error signing out:', error);
@@ -49,7 +49,7 @@ document.addEventListener('DOMContentLoaded', () => {
     onAuthStateChanged(auth, user => {
         if (!user) {
             // Redirect to sign in page if not signed in
-            window.location.href = 'signin.html';
+            window.location.href = 'index.html';
         }
     });
 });
