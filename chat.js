@@ -1,35 +1,61 @@
-// chat.js
-import { auth, database } from './firebaseConfig.js';  // Import Firebase configuration
-import { ref, push, onChildAdded, serverTimestamp } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js';
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+import { getDatabase, ref, push, onChildAdded } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+import { EmojiButton } from "https://cdn.jsdelivr.net/npm/emoji-button@4.6.2/dist/emoji-button.esm.js";
 
-// Elements from the chat page
+import firebaseConfig from './firebaseConfig.js';
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const database = getDatabase(app);
+
 const messageInput = document.getElementById('messageInput');
 const sendMessageButton = document.getElementById('sendMessage');
 const messagesDiv = document.getElementById('messages');
+const signOutButton = document.getElementById('signOut');
+const emojiButton = document.getElementById('emojiButton');
 
-// Send Message Function
+// Initialize Emoji Button
+const picker = new EmojiButton();
+
+emojiButton.addEventListener('click', () => {
+    picker.togglePicker(emojiButton);
+});
+
+picker.on('emoji', emoji => {
+    messageInput.value += emoji;
+});
+
 sendMessageButton.addEventListener('click', () => {
-    const userId = auth.currentUser.uid;  // Get current user's ID
-    const messageText = messageInput.value;
-
-    if (messageText.trim() !== '') {  // Check if message input is not empty
-        const messageRef = ref(database, 'messages');
-        push(messageRef, {
-            text: messageText,
-            userId,
-            timestamp: serverTimestamp()
-        }).then(() => {
-            messageInput.value = '';  // Clear input field after sending
-        }).catch(error => {
-            console.error('Error sending message:', error);
+    const message = messageInput.value.trim();
+    if (message !== '') {
+        push(ref(database, 'messages'), {
+            text: message,
+            timestamp: Date.now(),
+            uid: auth.currentUser.uid
         });
+        messageInput.value = '';
     }
 });
 
-// Display Messages Function
-onChildAdded(ref(database, 'messages'), snapshot => {
-    const msg = snapshot.val();
-    const msgDiv = document.createElement('div');
-    msgDiv.textContent = `${msg.userId}: ${msg.text}`;
-    messagesDiv.appendChild(msgDiv);
+onChildAdded(ref(database, 'messages'), (data) => {
+    const messageData = data.val();
+    const messageElement = document.createElement('div');
+    messageElement.textContent = messageData.text;
+    messagesDiv.appendChild(messageElement);
+});
+
+signOutButton.addEventListener('click', () => {
+    signOut(auth).then(() => {
+        window.location.href = 'index.html'; // Redirect to sign-in page
+    }).catch((error) => {
+        console.error('Sign Out Error', error);
+    });
+});
+
+onAuthStateChanged(auth, (user) => {
+    if (!user) {
+        window.location.href = 'index.html'; // Redirect to sign-in page
+    }
 });
