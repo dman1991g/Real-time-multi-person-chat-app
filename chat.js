@@ -1,9 +1,9 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
 import { getDatabase, ref, push, onChildAdded } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
-import { EmojiButton } from "https://cdn.jsdelivr.net/npm/emoji-button@4.6.2/dist/emoji-button.esm.js";
+import { EmojiButton } from "https://cdn.jsdelivr.net/npm/@joeattardi/emoji-button@4.6.2/dist/emoji-button.esm.js";
 
-import firebaseConfig from './firebaseConfig.js';
+import firebaseConfig from './firebaseConfig.js'; // Ensure this path is correct
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
