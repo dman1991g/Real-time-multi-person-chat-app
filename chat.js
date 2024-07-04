@@ -13,7 +13,7 @@ const messagesDiv = document.getElementById('messages');
 const emojiButton = document.getElementById('emojiButton');
 
 // Initialize the Emoji Button
-const picker = new EmojiButton();
+const picker = new emojiButton();
 emojiButton.addEventListener('click', () => {
     picker.togglePicker(emojiButton);
 });
