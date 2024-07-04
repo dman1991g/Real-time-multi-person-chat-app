@@ -7,8 +7,6 @@ const messageInput = document.getElementById('messageInput');
 const sendMessageButton = document.getElementById('sendMessage');
 const messagesDiv = document.getElementById('messages');
 const signOutButton = document.getElementById('signOut');
-const emojiButton = document.getElementById('emojiButton');
-
 
 // Send Message
 sendMessageButton.addEventListener('click', () => {
