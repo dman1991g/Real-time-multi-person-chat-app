@@ -3,24 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat</title>
+    <title>Chat Room</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    <div class="sidebar">
+        <h2>Chat Room Actions</h2>
+        <button id="createChatRoom">Create Chat Room</button>
+        <button id="joinChatRoom">Join Chat Room</button>
+        <button id="signOut">Sign Out</button>
+    </div>
+
     <div class="chat-container">
         <h2>Chat Room</h2>
         
-        <!-- Chat Room Input and Buttons -->
+        <!-- Chat Room Input and Messages -->
         <div>
             <input type="text" id="chatRoomInput" placeholder="Enter chat room ID">
-            <button id="createChatRoom">Create Chat Room</button>
-            <button id="joinChatRoom">Join Chat Room</button>
+            <button id="sendMessage">Send</button>
         </div>
 
         <div id="messages"></div>
         <input type="text" id="messageInput" placeholder="Type a message">
-        <button id="sendMessage">Send</button>
-        <button id="signOut">Sign Out</button>
     </div>
 
     <!-- Include Firebase SDKs from CDN -->
