@@ -1,104 +1,63 @@
 body {
-  font-family: Arial, sans-serif;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  background-color: #f1f1f1;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f1f1f1;
+}
+
+.app {
+    display: flex;
 }
 
 .sidebar {
-  width: 240px;
-  background-color: #f0f0f0;
-  padding: 20px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  transition: width 0.3s; /* Smooth transition for width change */
-}
-
-.sidebar h2 {
-  margin-top: 0;
-  font-size: 18px;
-  font-weight: bold;
-}
-
-.sidebar input[type="text"] {
-  width: 100%;
-  margin-bottom: 10px;
-  padding: 8px;
-  box-sizing: border-box;
-}
-
-.sidebar button {
-  width: 100%;
-  padding: 10px;
-  margin-bottom: 10px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  cursor: pointer;
-  font-size: 16px;
-}
-
-.sidebar button:hover {
-  background-color: #0056b3;
+    width: 250px; /* Adjust width as needed */
+    background-color: #f0f0f0;
+    padding: 10px;
+    box-shadow: 1px 0 5px rgba(0, 0, 0, 0.1);
 }
 
 .content {
-  width: calc(100% - 240px); /* Adjusted width to accommodate sidebar */
-  max-width: 400px;
-  padding: 20px;
-  background-color: white;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  transition: margin-left 0.3s; /* Smooth transition for content shift */
-}
-
-.chat-container {
-  margin-top: 20px;
+    flex: 1;
+    padding: 10px;
 }
 
 .messages {
-  border: 1px solid #ddd;
-  padding: 10px;
-  height: 300px;
-  overflow-y: scroll;
-  margin-bottom: 10px;
+    border: 1px solid #ddd;
+    padding: 10px;
+    height: 300px;
+    overflow-y: scroll;
+    margin-bottom: 10px;
 }
 
-.message-input-container {
-  margin-top: 10px;
+input, button {
+    width: 100%;
+    padding: 10px;
+    margin: 5px 0;
+    box-sizing: border-box;
 }
 
-#messageInput {
-  width: calc(100% - 80px);
-  padding: 10px;
-  box-sizing: border-box;
+button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    cursor: pointer;
 }
 
-#sendMessage {
-  width: 80px;
-  padding: 10px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  cursor: pointer;
+button:hover {
+    background-color: #0056b3;
 }
 
-#sendMessage:hover {
-  background-color: #0056b3;
+/* Initial state of the collapsed sidebar */
+.collapsed {
+    width: 0;
+    overflow: hidden;
 }
 
-.sign-out-button {
-  margin-top: 10px;
-  width: 100%;
-  padding: 10px;
-  background-color: #dc3545;
-  color: white;
-  border: none;
-  cursor: pointer;
-}
-
-.sign-out-button:hover {
-  background-color: #c82333;
+/* Transition for sidebar width change */
+.sidebar {
+    transition: width 0.3s;
 }
