@@ -10,12 +10,11 @@ body {
 }
 
 .sidebar {
-  width: 240px; /* Increased width to create more space */
+  width: 240px;
   background-color: #f0f0f0;
   padding: 20px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  float: left; /* Ensures sidebar stays on the left */
-  margin-right: 20px; /* Adds space between sidebar and chat container */
+  transition: width 0.3s; /* Smooth transition for width change */
 }
 
 .sidebar h2 {
@@ -46,30 +45,17 @@ body {
   background-color: #0056b3;
 }
 
-#app {
-  width: calc(100% - 280px); /* Adjust based on sidebar width */
+.content {
+  width: calc(100% - 240px); /* Adjusted width to accommodate sidebar */
   max-width: 400px;
   padding: 20px;
   background-color: white;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  transition: margin-left 0.3s; /* Smooth transition for content shift */
 }
 
-input, button {
-  width: 100%;
-  padding: 10px;
-  margin: 5px 0;
-  box-sizing: border-box;
-}
-
-button {
-  background-color: #007bff;
-  color: white;
-  border: none;
-  cursor: pointer;
-}
-
-button:hover {
-  background-color: #0056b3;
+.chat-container {
+  margin-top: 20px;
 }
 
 .messages {
@@ -85,13 +71,13 @@ button:hover {
 }
 
 #messageInput {
-  width: calc(100% - 80px); /* Adjust width as needed */
+  width: calc(100% - 80px);
   padding: 10px;
   box-sizing: border-box;
 }
 
 #sendMessage {
-  width: 80px; /* Adjust button width */
+  width: 80px;
   padding: 10px;
   background-color: #007bff;
   color: white;
@@ -101,4 +87,18 @@ button:hover {
 
 #sendMessage:hover {
   background-color: #0056b3;
+}
+
+.sign-out-button {
+  margin-top: 10px;
+  width: 100%;
+  padding: 10px;
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+.sign-out-button:hover {
+  background-color: #c82333;
 }
