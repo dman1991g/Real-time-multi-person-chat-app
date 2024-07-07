@@ -11,6 +11,7 @@ const chatRoomInput = document.getElementById('chatRoomInput');
 const createChatRoomButton = document.getElementById('createChatRoom');
 const joinChatRoomButton = document.getElementById('joinChatRoom');
 const signOutButton = document.getElementById('signOut');
+const toggleSidebarButton = document.getElementById('toggleSidebar'); // Added for sidebar toggle
 
 let currentRoomId = null; // Track the current chat room ID
 
@@ -93,4 +94,13 @@ signOutButton.addEventListener('click', () => {
             window.location.href = 'index.html'; // Redirect to sign-in page
         })
         .catch(error => console.error('Error signing out:', error));
+});
+
+// Event listener for toggling sidebar visibility
+toggleSidebarButton.addEventListener('click', () => {
+    const sidebar = document.getElementById('sidebar');
+    const content = document.getElementById('content');
+
+    sidebar.classList.toggle('collapsed'); // Toggle the 'collapsed' class on sidebar
+    content.classList.toggle('expanded'); // Toggle the 'expanded' class on content
 });
