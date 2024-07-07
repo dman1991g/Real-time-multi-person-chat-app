@@ -1,43 +1,39 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat Room</title>
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Collapsible Sidebar</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="sidebar">
-        <h2>Chat Room Actions</h2>
-        <!-- Move chat room ID input to sidebar -->
-        <input type="text" id="chatRoomInput" placeholder="Enter chat room ID">
-        <button id="createChatRoom">Create Chat Room</button>
-        <button id="joinChatRoom">Join Chat Room</button>
-        <button id="signOut">Sign Out</button>
-    </div>
 
+  <!-- Sidebar -->
+  <div class="sidebar" id="sidebar">
+    <h2>Chat Room Actions</h2>
+    <input type="text" id="chatRoomInput" placeholder="Enter chat room ID">
+    <button id="createChatRoom">Create Chat Room</button>
+    <button id="joinChatRoom">Join Chat Room</button>
+    <button id="signOut">Sign Out</button>
+    <button id="toggleSidebar">Toggle Sidebar</button> <!-- Button to toggle sidebar -->
+  </div>
+
+  <!-- Main Content -->
+  <div class="content" id="content">
     <div class="chat-container">
-        <h2>Chat Room</h2>
-        
-        <!-- Messages Display -->
-        <div id="messages"></div>
-
-        <!-- Message Input and Send Button -->
-        <div>
-            <input type="text" id="messageInput" placeholder="Type a message">
-            <button id="sendMessage">Send</button>
-        </div>
+      <h2>Chat Room</h2>
+      
+      <div id="messages" class="messages"></div>
+      
+      <div class="message-input-container">
+        <input type="text" id="messageInput" placeholder="Type a message">
+        <button id="sendMessage">Send</button>
+      </div>
+      
+      <button id="signOut" class="sign-out-button">Sign Out</button>
     </div>
+  </div>
 
-    <!-- Include Firebase SDKs from CDN -->
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js"></script>
-
-    <!-- Firebase Config Script -->
-    <script type="module" src="firebaseConfig.js"></script>
-    
-    <!-- Your Main Script -->
-    <script type="module" src="chat.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
