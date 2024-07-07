@@ -10,14 +10,44 @@ body {
 }
 
 .sidebar {
-  width: 200px;
+  width: 240px; /* Increased width to create more space */
   background-color: #f0f0f0;
   padding: 20px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  float: left; /* Ensures sidebar stays on the left */
+  margin-right: 20px; /* Adds space between sidebar and chat container */
+}
+
+.sidebar h2 {
+  margin-top: 0;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.sidebar input[type="text"] {
+  width: 100%;
+  margin-bottom: 10px;
+  padding: 8px;
+  box-sizing: border-box;
+}
+
+.sidebar button {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.sidebar button:hover {
+  background-color: #0056b3;
 }
 
 #app {
-  width: calc(100% - 240px); /* Adjust based on sidebar width */
+  width: calc(100% - 280px); /* Adjust based on sidebar width */
   max-width: 400px;
   padding: 20px;
   background-color: white;
