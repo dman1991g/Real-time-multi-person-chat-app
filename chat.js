@@ -7,10 +7,10 @@ import { ref, push, onChildAdded, serverTimestamp, set } from 'https://www.gstat
 const messageInput = document.getElementById('messageInput');
 const sendMessageButton = document.getElementById('sendMessage');
 const messagesDiv = document.getElementById('messages');
-const signOutButton = document.getElementById('signOut');
 const chatRoomInput = document.getElementById('chatRoomInput');
 const createChatRoomButton = document.getElementById('createChatRoom');
 const joinChatRoomButton = document.getElementById('joinChatRoom');
+const signOutButton = document.getElementById('signOut');
 
 let currentRoomId = null; // Track the current chat room ID
 
@@ -41,24 +41,34 @@ function listenForMessages(roomId) {
 }
 
 // Function to create a new chat room
-function createChatRoom(roomId) {
-    set(ref(database, `chatrooms/${roomId}`), {
-        messages: {},
-        users: {}
-    }).then(() => {
-        console.log(`Chat room ${roomId} created.`);
-    }).catch(error => console.error('Error creating chat room:', error));
+function createChatRoom() {
+    const roomId = chatRoomInput.value.trim();
+    if (roomId !== '') {
+        set(ref(database, `chatrooms/${roomId}`), {
+            messages: {},
+            users: {}
+        }).then(() => {
+            console.log(`Chat room ${roomId} created.`);
+        }).catch(error => console.error('Error creating chat room:', error));
+    } else {
+        console.error('Please enter a chat room ID.');
+    }
 }
 
 // Function to join a chat room
-function joinChatRoom(roomId) {
-    const userId = auth.currentUser ? auth.currentUser.uid : 'anonymous';
-    const userRef = ref(database, `chatrooms/${roomId}/users/${userId}`);
-    set(userRef, true).then(() => {
-        console.log(`User ${userId} joined chat room ${roomId}.`);
-        currentRoomId = roomId;
-        listenForMessages(roomId); // Start listening for messages in the chat room
-    }).catch(error => console.error('Error joining chat room:', error));
+function joinChatRoom() {
+    const roomId = chatRoomInput.value.trim();
+    if (roomId !== '') {
+        const userId = auth.currentUser ? auth.currentUser.uid : 'anonymous';
+        const userRef = ref(database, `chatrooms/${roomId}/users/${userId}`);
+        set(userRef, true).then(() => {
+            console.log(`User ${userId} joined chat room ${roomId}.`);
+            currentRoomId = roomId;
+            listenForMessages(roomId); // Start listening for messages in the chat room
+        }).catch(error => console.error('Error joining chat room:', error));
+    } else {
+        console.error('Please enter a chat room ID.');
+    }
 }
 
 // Event listener for sending message
@@ -71,22 +81,12 @@ sendMessageButton.addEventListener('click', () => {
 });
 
 // Event listener for creating a chat room
-createChatRoomButton.addEventListener('click', () => {
-    const roomId = chatRoomInput.value.trim();
-    if (roomId !== '') {
-        createChatRoom(roomId);
-    }
-});
+createChatRoomButton.addEventListener('click', createChatRoom);
 
 // Event listener for joining a chat room
-joinChatRoomButton.addEventListener('click', () => {
-    const roomId = chatRoomInput.value.trim();
-    if (roomId !== '') {
-        joinChatRoom(roomId);
-    }
-});
+joinChatRoomButton.addEventListener('click', joinChatRoom);
 
-// Sign out user
+// Event listener for signing out
 signOutButton.addEventListener('click', () => {
     signOut(auth)
         .then(() => {
