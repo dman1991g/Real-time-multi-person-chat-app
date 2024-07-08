@@ -13,7 +13,8 @@ const joinChatRoomButton = document.getElementById('joinChatRoom');
 const signOutButton = document.getElementById('signOut');
 const toggleSidebarButton = document.getElementById('toggleSidebar');
 
-const chatRoomList = document.getElementById('chatRoomList'); // Element to hold chat room list
+const sidebar = document.getElementById('sidebar');
+const content = document.getElementById('content');
 
 let currentRoomId = null; // Track the current chat room ID
 
@@ -72,6 +73,7 @@ function joinChatRoom(roomId) {
 // Function to fetch and display chat room list
 function displayChatRooms() {
     onValue(ref(database, 'chatrooms'), snapshot => {
+        const chatRoomList = document.getElementById('chatRoomList');
         chatRoomList.innerHTML = ''; // Clear previous list
         snapshot.forEach(childSnapshot => {
             const roomId = childSnapshot.key;
@@ -117,9 +119,6 @@ signOutButton.addEventListener('click', () => {
 
 // Event listener for toggling sidebar visibility
 toggleSidebarButton.addEventListener('click', () => {
-    const sidebar = document.getElementById('sidebar');
-    const content = document.getElementById('content');
-
     sidebar.classList.toggle('collapsed'); // Toggle the 'collapsed' class on sidebar
     content.classList.toggle('expanded'); // Toggle the 'expanded' class on content
 });
