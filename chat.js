@@ -1,7 +1,7 @@
 // Import Firebase functions
 import { auth, database } from './firebaseConfig.js';
 import { signOut } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js';
-import { ref, push, onChildAdded, serverTimestamp, set } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js';
+import { ref, push, onChildAdded, serverTimestamp, set, onValue } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js';
 
 // Get DOM elements
 const messageInput = document.getElementById('messageInput');
@@ -11,7 +11,9 @@ const chatRoomInput = document.getElementById('chatRoomInput');
 const createChatRoomButton = document.getElementById('createChatRoom');
 const joinChatRoomButton = document.getElementById('joinChatRoom');
 const signOutButton = document.getElementById('signOut');
-const toggleSidebarButton = document.getElementById('toggleSidebar'); // Added for sidebar toggle
+const toggleSidebarButton = document.getElementById('toggleSidebar');
+
+const chatRoomList = document.getElementById('chatRoomList'); // New element to hold chat room list
 
 let currentRoomId = null; // Track the current chat room ID
 
@@ -72,6 +74,21 @@ function joinChatRoom() {
     }
 }
 
+// Function to fetch and display chat room list
+function displayChatRooms() {
+    onValue(ref(database, 'chatrooms'), snapshot => {
+        chatRoomList.innerHTML = ''; // Clear previous list
+        snapshot.forEach(childSnapshot => {
+            const roomId = childSnapshot.key;
+            const roomDiv = document.createElement('div');
+            roomDiv.classList.add('room');
+            roomDiv.textContent = roomId;
+            roomDiv.addEventListener('click', () => joinChatRoom(roomId));
+            chatRoomList.appendChild(roomDiv);
+        });
+    });
+}
+
 // Event listener for sending message
 sendMessageButton.addEventListener('click', () => {
     if (currentRoomId) {
@@ -104,3 +121,6 @@ toggleSidebarButton.addEventListener('click', () => {
     sidebar.classList.toggle('collapsed'); // Toggle the 'collapsed' class on sidebar
     content.classList.toggle('expanded'); // Toggle the 'expanded' class on content
 });
+
+// Display initial list of chat rooms
+displayChatRooms();
