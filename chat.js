@@ -13,7 +13,7 @@ const joinChatRoomButton = document.getElementById('joinChatRoom');
 const signOutButton = document.getElementById('signOut');
 const toggleSidebarButton = document.getElementById('toggleSidebar');
 
-const chatRoomList = document.getElementById('chatRoomList'); // New element to hold chat room list
+const chatRoomList = document.getElementById('chatRoomList'); // Element to hold chat room list
 
 let currentRoomId = null; // Track the current chat room ID
 
@@ -59,19 +59,14 @@ function createChatRoom() {
 }
 
 // Function to join a chat room
-function joinChatRoom() {
-    const roomId = chatRoomInput.value.trim();
-    if (roomId !== '') {
-        const userId = auth.currentUser ? auth.currentUser.uid : 'anonymous';
-        const userRef = ref(database, `chatrooms/${roomId}/users/${userId}`);
-        set(userRef, true).then(() => {
-            console.log(`User ${userId} joined chat room ${roomId}.`);
-            currentRoomId = roomId;
-            listenForMessages(roomId); // Start listening for messages in the chat room
-        }).catch(error => console.error('Error joining chat room:', error));
-    } else {
-        console.error('Please enter a chat room ID.');
-    }
+function joinChatRoom(roomId) {
+    const userId = auth.currentUser ? auth.currentUser.uid : 'anonymous';
+    const userRef = ref(database, `chatrooms/${roomId}/users/${userId}`);
+    set(userRef, true).then(() => {
+        console.log(`User ${userId} joined chat room ${roomId}.`);
+        currentRoomId = roomId;
+        listenForMessages(roomId); // Start listening for messages in the chat room
+    }).catch(error => console.error('Error joining chat room:', error));
 }
 
 // Function to fetch and display chat room list
@@ -102,7 +97,14 @@ sendMessageButton.addEventListener('click', () => {
 createChatRoomButton.addEventListener('click', createChatRoom);
 
 // Event listener for joining a chat room
-joinChatRoomButton.addEventListener('click', joinChatRoom);
+joinChatRoomButton.addEventListener('click', () => {
+    const roomId = chatRoomInput.value.trim();
+    if (roomId !== '') {
+        joinChatRoom(roomId);
+    } else {
+        console.error('Please enter a chat room ID.');
+    }
+});
 
 // Event listener for signing out
 signOutButton.addEventListener('click', () => {
