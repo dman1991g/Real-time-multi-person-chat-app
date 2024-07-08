@@ -59,8 +59,7 @@ body {
 }
 
 #sendMessage {
-    width: 20%; /* Adjust width as needed */
-    margin-left: 10px; /* Add spacing between input field and button */
+    width: 100%; /* Adjust width as needed */
     padding: 10px;
     box-sizing: border-box;
     background-color: #007bff;
