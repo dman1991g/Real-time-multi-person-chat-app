@@ -49,13 +49,12 @@ body {
 .input-container {
     display: flex;
     flex-direction: column;
-    margin-top: 10px; /* Adjust as needed */
 }
 
 #messageInput {
-    flex: 1; /* Take remaining space */
     padding: 10px;
     box-sizing: border-box;
+    margin-top: 10px;
 }
 
 #sendMessage {
