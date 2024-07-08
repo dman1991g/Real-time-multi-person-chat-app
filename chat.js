@@ -86,7 +86,7 @@ function displayChatRooms() {
     });
 }
 
-// Event listener for sending message
+// Event listener for sending message (button click)
 sendMessageButton.addEventListener('click', () => {
     if (currentRoomId) {
         sendMessage(currentRoomId);
@@ -121,6 +121,18 @@ signOutButton.addEventListener('click', () => {
 toggleSidebarButton.addEventListener('click', () => {
     sidebar.classList.toggle('collapsed'); // Toggle the 'collapsed' class on sidebar
     content.classList.toggle('expanded'); // Toggle the 'expanded' class on content
+});
+
+// Event listener for sending message (Enter key)
+messageInput.addEventListener('keydown', event => {
+    if (event.key === 'Enter') {
+        event.preventDefault(); // Prevent default behavior (e.g., submitting a form)
+        if (currentRoomId) {
+            sendMessage(currentRoomId);
+        } else {
+            console.error('No chat room selected.');
+        }
+    }
 });
 
 // Display initial list of chat rooms
