@@ -46,6 +46,32 @@ body {
     margin-bottom: 8px; /* Add margin between individual messages */
 }
 
+.input-container {
+    display: flex;
+    margin-top: 10px; /* Adjust as needed */
+}
+
+#messageInput {
+    flex: 1; /* Take remaining space */
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+#sendMessage {
+    width: 20%; /* Adjust width as needed */
+    margin-left: 10px; /* Add spacing between input field and button */
+    padding: 10px;
+    box-sizing: border-box;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+#sendMessage:hover {
+    background-color: #0056b3;
+}
+
 /* Chat room list styling */
 #chatRoomList {
     margin-top: 10px;
