@@ -17,7 +17,15 @@ body {
     background-color: #f0f0f0;
     padding: 10px;
     box-shadow: 1px 0 5px rgba(0, 0, 0, 0.1);
+    transition: width 0.3s ease; /* Smooth transition for width changes */
 }
+
+.sidebar.collapsed {
+    width: 0;
+    overflow: hidden;
+    transition: width 0.3s ease; /* Smooth transition for width changes */
+}
+
 
 .content {
     flex: 1; /* Take remaining space */
