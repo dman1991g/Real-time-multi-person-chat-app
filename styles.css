@@ -52,9 +52,10 @@ body {
 }
 
 #messageInput {
+    width: 100%
     padding: 10px;
     box-sizing: border-box;
-    margin-top: 10px;
+    margin-top: 20px;
 }
 
 #sendMessage {
