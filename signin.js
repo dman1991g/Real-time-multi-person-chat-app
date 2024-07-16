@@ -1,11 +1,11 @@
 // signin.js
 
-import { app, auth } from './firebaseConfig.js';
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js';
+import { auth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } from './firebaseConfig.js';
 
 document.addEventListener('DOMContentLoaded', () => {
     const emailInput = document.getElementById('email');
     const passwordInput = document.getElementById('password');
+    const usernameInput = document.getElementById('username');
     const signUpButton = document.getElementById('signUp');
     const signInButton = document.getElementById('signIn');
 
@@ -13,12 +13,24 @@ document.addEventListener('DOMContentLoaded', () => {
     signUpButton.addEventListener('click', () => {
         const email = emailInput.value;
         const password = passwordInput.value;
+        const username = usernameInput.value;
+
         createUserWithEmailAndPassword(auth, email, password)
             .then(userCredential => {
-                console.log('User signed up:', userCredential.user);
+                // Signed up successfully
+                const user = userCredential.user;
+                console.log('User signed up:', user);
+
+                // Update user profile with username
+                return user.updateProfile({
+                    displayName: username
+                });
+            })
+            .then(() => {
+                console.log('Username updated successfully');
             })
             .catch(error => {
-                console.error('Error signing up:', error);
+                console.error('Error signing up:', error.message);
             });
     });
 
@@ -26,14 +38,17 @@ document.addEventListener('DOMContentLoaded', () => {
     signInButton.addEventListener('click', () => {
         const email = emailInput.value;
         const password = passwordInput.value;
+
         signInWithEmailAndPassword(auth, email, password)
             .then(userCredential => {
-                console.log('User signed in:', userCredential.user);
+                // Signed in successfully
+                const user = userCredential.user;
+                console.log('User signed in:', user);
                 // Redirect to chat page after successful sign in
                 window.location.href = 'chat.html';
             })
             .catch(error => {
-                console.error('Error signing in:', error);
+                console.error('Error signing in:', error.message);
             });
     });
 
