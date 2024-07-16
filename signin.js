@@ -1,8 +1,8 @@
 // signin.js
 
-import { auth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } from './firebaseConfig.js';
+import { auth } from './firebaseConfig.js';  // Importing auth from firebaseConfig.js
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js';
 
-// Wait for the DOM to be fully loaded
 document.addEventListener('DOMContentLoaded', () => {
     const emailInput = document.getElementById('email');
     const passwordInput = document.getElementById('password');
