@@ -21,11 +21,11 @@ let currentRoomId = null; // Track the current chat room ID
 // Function to send a message to a specific chat room
 function sendMessage(roomId) {
     if (messageInput.value.trim() !== '') {
-        const userId = auth.currentUser ? auth.currentUser.uid : 'anonymous';
+        const user = auth.currentUser;
         const messageRef = ref(database, `chatrooms/${roomId}/messages`);
         push(messageRef, {
             text: messageInput.value,
-            userId,
+            username: user.displayName,  // Use displayName if available
             timestamp: serverTimestamp()
         }).then(() => {
             messageInput.value = ''; // Clear input field
@@ -39,7 +39,7 @@ function listenForMessages(roomId) {
     onChildAdded(ref(database, `chatrooms/${roomId}/messages`), snapshot => {
         const msg = snapshot.val();
         const msgDiv = document.createElement('div');
-        msgDiv.textContent = `${msg.userId}: ${msg.text}`;
+        msgDiv.textContent = `${msg.username}: ${msg.text}`;  // Display username instead of userId
         messagesDiv.appendChild(msgDiv);
     });
 }
