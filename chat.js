@@ -1,4 +1,6 @@
-// Import Firebase functions
+// chat.js
+
+// Import Firebase functions and modules
 import { auth, database } from './firebaseConfig.js';
 import { signOut } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js';
 import { ref, push, onChildAdded, serverTimestamp, set, onValue } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js';
@@ -12,7 +14,6 @@ const createChatRoomButton = document.getElementById('createChatRoom');
 const joinChatRoomButton = document.getElementById('joinChatRoom');
 const signOutButton = document.getElementById('signOut');
 const toggleSidebarButton = document.getElementById('toggleSidebar');
-
 const sidebar = document.getElementById('sidebar');
 const content = document.getElementById('content');
 
@@ -39,7 +40,8 @@ function listenForMessages(roomId) {
     onChildAdded(ref(database, `chatrooms/${roomId}/messages`), snapshot => {
         const msg = snapshot.val();
         const msgDiv = document.createElement('div');
-        msgDiv.textContent = `${msg.username}: ${msg.text}`;  // Display username instead of userId
+        const displayName = msg.username || 'Anonymous'; // Display username or 'Anonymous' if not set
+        msgDiv.textContent = `${displayName}: ${msg.text}`;  // Display username instead of userId
         messagesDiv.appendChild(msgDiv);
     });
 }
