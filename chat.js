@@ -1,5 +1,3 @@
-// chat.js
-
 // Import Firebase functions and modules
 import { auth, database } from './firebaseConfig.js';
 import { signOut } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js';
@@ -16,6 +14,7 @@ const signOutButton = document.getElementById('signOut');
 const toggleSidebarButton = document.getElementById('toggleSidebar');
 const sidebar = document.getElementById('sidebar');
 const content = document.getElementById('content');
+const chatRoomList = document.getElementById('chatRoomList'); // Added for chat room list display
 
 let currentRoomId = null; // Track the current chat room ID
 
@@ -75,7 +74,6 @@ function joinChatRoom(roomId) {
 // Function to fetch and display chat room list
 function displayChatRooms() {
     onValue(ref(database, 'chatrooms'), snapshot => {
-        const chatRoomList = document.getElementById('chatRoomList');
         chatRoomList.innerHTML = ''; // Clear previous list
         snapshot.forEach(childSnapshot => {
             const roomId = childSnapshot.key;
