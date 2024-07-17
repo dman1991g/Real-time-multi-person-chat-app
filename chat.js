@@ -1,7 +1,7 @@
 // Import Firebase functions and modules
 import { auth, database } from './firebaseConfig.js';
-import { signOut } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js';
-import { ref, push, onChildAdded, serverTimestamp, set, onValue, get } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js';
+import { signOut } from 'firebase/auth';
+import { ref, push, onChildAdded, serverTimestamp, get } from 'firebase/database';
 
 // Get DOM elements
 const messageInput = document.getElementById('messageInput');
