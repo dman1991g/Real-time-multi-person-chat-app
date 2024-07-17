@@ -25,7 +25,7 @@ function sendMessage(roomId) {
         const messageRef = ref(database, `chatrooms/${roomId}/messages`);
         push(messageRef, {
             text: messageInput.value,
-            sender: user.uid,
+            sender: user.uid,  // Use user.uid directly
             timestamp: serverTimestamp()
         }).then(() => {
             messageInput.value = ''; // Clear input field
@@ -38,24 +38,27 @@ function listenForMessages(roomId) {
     messagesDiv.innerHTML = ''; // Clear previous messages
     onChildAdded(ref(database, `chatrooms/${roomId}/messages`), snapshot => {
         const msg = snapshot.val();
-        // Fetch username for the sender UID
-        fetchUsername(msg.sender)
-            .then(username => {
-                const msgDiv = document.createElement('div');
-                msgDiv.textContent = `${username}: ${msg.text}`;  // Display username instead of UID
-                messagesDiv.appendChild(msgDiv);
-            })
-            .catch(error => console.error('Error fetching username:', error));
+        const msgDiv = document.createElement('div');
+        
+        // Fetch username based on sender UID
+        fetchUsername(msg.sender).then(username => {
+            msgDiv.textContent = `${username}: ${msg.text}`;  // Display username instead of UID
+            messagesDiv.appendChild(msgDiv);
+        }).catch(error => {
+            console.error('Error fetching username:', error);
+            msgDiv.textContent = `Anonymous: ${msg.text}`;  // Fallback to UID
+            messagesDiv.appendChild(msgDiv);
+        });
     });
 }
 
 // Function to fetch username for a given UID
 function fetchUsername(userId) {
     return new Promise((resolve, reject) => {
-        const userRef = ref(database, `users/${userId}/username`);
-        onValue(userRef, snapshot => {
+        const usernameRef = ref(database, `usernames/${userId}`);
+        onValue(usernameRef, snapshot => {
             const username = snapshot.val();
-            resolve(username);
+            resolve(username || 'Anonymous');
         }, error => {
             reject(error);
         });
