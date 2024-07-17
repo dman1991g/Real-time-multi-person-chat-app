@@ -40,29 +40,27 @@ function listenForMessages(roomId) {
         const msg = snapshot.val();
         const msgDiv = document.createElement('div');
         
-        // Fetch username based on sender UID
-        fetchUsername(msg.sender).then(username => {
-            msgDiv.textContent = `${username}: ${msg.text}`;  // Display username instead of UID
+        // Retrieve username based on sender UID from usernames node
+        getUsername(msg.sender).then(username => {
+            msgDiv.textContent = `${username}: ${msg.text}`;
             messagesDiv.appendChild(msgDiv);
         }).catch(error => {
             console.error('Error fetching username:', error);
-            msgDiv.textContent = `Anonymous: ${msg.text}`;  // Fallback to UID
+            msgDiv.textContent = `Anonymous: ${msg.text}`;
             messagesDiv.appendChild(msgDiv);
         });
     });
 }
 
-// Function to fetch username for a given UID
-function fetchUsername(userId) {
-    return new Promise((resolve, reject) => {
-        const usernameRef = ref(database, `usernames/${userId}`);
-        onValue(usernameRef, snapshot => {
-            const username = snapshot.val();
-            resolve(username || 'Anonymous');
-        }, error => {
-            reject(error);
-        });
-    });
+// Function to fetch username based on UID from usernames node
+async function getUsername(uid) {
+    try {
+        const snapshot = await ref(database, `usernames/${uid}`).get();
+        return snapshot.val() || 'Anonymous'; // Return username or 'Anonymous' if not found
+    } catch (error) {
+        console.error('Error getting username:', error);
+        return 'Anonymous'; // Return 'Anonymous' on error
+    }
 }
 
 // Function to create a new chat room
