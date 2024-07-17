@@ -1,6 +1,6 @@
-// Import Firebase functions and modules
+// Import Firebase services and modules
 import { auth, database } from './firebaseConfig.js';
-import { signOut } from 'firebase/auth';
+import { getAuth, signOut } from 'firebase/auth';
 import { ref, push, onChildAdded, serverTimestamp, get } from 'firebase/database';
 
 // Get DOM elements
