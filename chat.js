@@ -17,6 +17,21 @@ const content = document.getElementById('content');
 const chatRoomList = document.getElementById('chatRoomList'); // Added for chat room list display
 
 let currentRoomId = null; // Track the current chat room ID
+const usernames = {}; // Store usernames
+
+// Function to fetch usernames from the database
+function fetchUsernames() {
+    onValue(ref(database, 'usernames'), snapshot => {
+        snapshot.forEach(childSnapshot => {
+            const uid = childSnapshot.key;
+            const username = childSnapshot.val();
+            usernames[uid] = username; // Store each username with its corresponding UID
+        });
+    }, error => console.error('Error fetching usernames:', error));
+}
+
+// Call fetchUsernames to initialize the usernames object
+fetchUsernames();
 
 // Function to send a message to a specific chat room
 function sendMessage(roomId) {
@@ -41,7 +56,8 @@ function listenForMessages(roomId) {
     onChildAdded(ref(database, `chatrooms/${roomId}/messages`), snapshot => {
         const msg = snapshot.val();
         const msgDiv = document.createElement('div');
-        msgDiv.textContent = `${msg.sender}: ${msg.text}`;  // Display UID instead of username
+        const senderUsername = usernames[msg.sender] || msg.sender; // Use username if available, otherwise UID
+        msgDiv.textContent = `${senderUsername}: ${msg.text}`;
         messagesDiv.appendChild(msgDiv);
     });
 }
@@ -63,13 +79,18 @@ function createChatRoom() {
 
 // Function to join a chat room
 function joinChatRoom(roomId) {
-    const userId = auth.currentUser ? auth.currentUser.uid : 'anonymous';
-    const userRef = ref(database, `chatrooms/${roomId}/users/${userId}`);
-    set(userRef, true).then(() => {
-        console.log(`User ${userId} joined chat room ${roomId}.`);
-        currentRoomId = roomId;
-        listenForMessages(roomId); // Start listening for messages in the chat room
-    }).catch(error => console.error('Error joining chat room:', error));
+    const user = auth.currentUser;
+    if (user) {
+        const userId = user.uid;
+        const userRef = ref(database, `chatrooms/${roomId}/users/${userId}`);
+        set(userRef, true).then(() => {
+            console.log(`User ${userId} joined chat room ${roomId}.`);
+            currentRoomId = roomId;
+            listenForMessages(roomId); // Start listening for messages in the chat room
+        }).catch(error => console.error('Error joining chat room:', error));
+    } else {
+        console.error('No authenticated user.');
+    }
 }
 
 // Function to fetch and display chat room list
