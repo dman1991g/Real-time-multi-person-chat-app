@@ -1,7 +1,7 @@
-// Import Firebase services and modules
+// Import Firebase functions and modules
 import { auth, database } from './firebaseConfig.js';
-import { getAuth, signOut } from 'firebase/auth';
-import { ref, push, onChildAdded, serverTimestamp, get } from 'firebase/database';
+import { signOut } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js';
+import { ref, push, onChildAdded, serverTimestamp, set, onValue } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js';
 
 // Get DOM elements
 const messageInput = document.getElementById('messageInput');
@@ -20,8 +20,8 @@ let currentRoomId = null; // Track the current chat room ID
 
 // Function to send a message to a specific chat room
 function sendMessage(roomId) {
-    if (messageInput.value.trim() !== '') {
-        const user = auth.currentUser;
+    const user = auth.currentUser;
+    if (user && messageInput.value.trim() !== '') {
         const messageRef = ref(database, `chatrooms/${roomId}/messages`);
         push(messageRef, {
             text: messageInput.value,
@@ -30,6 +30,8 @@ function sendMessage(roomId) {
         }).then(() => {
             messageInput.value = ''; // Clear input field
         }).catch(error => console.error('Error sending message:', error));
+    } else {
+        console.error('User is not authenticated or message input is empty.');
     }
 }
 
@@ -39,32 +41,9 @@ function listenForMessages(roomId) {
     onChildAdded(ref(database, `chatrooms/${roomId}/messages`), snapshot => {
         const msg = snapshot.val();
         const msgDiv = document.createElement('div');
-
-        // Retrieve username based on sender UID from usernames node
-        getUsername(msg.sender).then(username => {
-            msgDiv.textContent = `${username}: ${msg.text}`;
-            messagesDiv.appendChild(msgDiv);
-        }).catch(error => {
-            console.error('Error fetching username:', error);
-            msgDiv.textContent = `Anonymous: ${msg.text}`;
-            messagesDiv.appendChild(msgDiv);
-        });
+        msgDiv.textContent = `${msg.sender}: ${msg.text}`;  // Display UID instead of username
+        messagesDiv.appendChild(msgDiv);
     });
-}
-
-// Function to fetch username based on UID from usernames node
-async function getUsername(uid) {
-    try {
-        const snapshot = await get(ref(database, `usernames/${uid}`));
-        if (snapshot.exists()) {
-            return snapshot.val();
-        } else {
-            throw new Error(`Username for UID ${uid} not found`);
-        }
-    } catch (error) {
-        console.error('Error getting username:', error);
-        return 'Anonymous'; // Return 'Anonymous' on error or if username not found
-    }
 }
 
 // Function to create a new chat room
