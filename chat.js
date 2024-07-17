@@ -1,7 +1,7 @@
 // Import Firebase functions and modules
 import { auth, database } from './firebaseConfig.js';
 import { signOut } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js';
-import { ref, push, onChildAdded, serverTimestamp, set, onValue } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js';
+import { ref, push, onChildAdded, serverTimestamp, set, onValue, get } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js';
 
 // Get DOM elements
 const messageInput = document.getElementById('messageInput');
@@ -39,7 +39,7 @@ function listenForMessages(roomId) {
     onChildAdded(ref(database, `chatrooms/${roomId}/messages`), snapshot => {
         const msg = snapshot.val();
         const msgDiv = document.createElement('div');
-        
+
         // Retrieve username based on sender UID from usernames node
         getUsername(msg.sender).then(username => {
             msgDiv.textContent = `${username}: ${msg.text}`;
@@ -55,11 +55,15 @@ function listenForMessages(roomId) {
 // Function to fetch username based on UID from usernames node
 async function getUsername(uid) {
     try {
-        const snapshot = await ref(database, `usernames/${uid}`).get();
-        return snapshot.val() || 'Anonymous'; // Return username or 'Anonymous' if not found
+        const snapshot = await get(ref(database, `usernames/${uid}`));
+        if (snapshot.exists()) {
+            return snapshot.val();
+        } else {
+            throw new Error(`Username for UID ${uid} not found`);
+        }
     } catch (error) {
         console.error('Error getting username:', error);
-        return 'Anonymous'; // Return 'Anonymous' on error
+        return 'Anonymous'; // Return 'Anonymous' on error or if username not found
     }
 }
 
