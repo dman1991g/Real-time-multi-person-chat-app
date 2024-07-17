@@ -23,10 +23,11 @@ const usernames = {}; // Store usernames
 function fetchUsernames() {
     onValue(ref(database, 'usernames'), snapshot => {
         snapshot.forEach(childSnapshot => {
-            const uid = childSnapshot.key;
-            const username = childSnapshot.val();
+            const username = childSnapshot.key; // Username is the key
+            const uid = childSnapshot.val(); // UID is the value
             usernames[uid] = username; // Store each username with its corresponding UID
         });
+        console.log('Usernames fetched:', usernames); // Debug: Log fetched usernames
     }, error => console.error('Error fetching usernames:', error));
 }
 
@@ -59,6 +60,8 @@ function listenForMessages(roomId) {
         const senderUsername = usernames[msg.sender] || msg.sender; // Use username if available, otherwise UID
         msgDiv.textContent = `${senderUsername}: ${msg.text}`;
         messagesDiv.appendChild(msgDiv);
+        console.log('Message received:', msg); // Debug: Log received message
+        console.log('Sender username:', senderUsername); // Debug: Log sender username
     });
 }
 
