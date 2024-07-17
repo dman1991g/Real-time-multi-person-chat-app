@@ -25,7 +25,7 @@ function sendMessage(roomId) {
         const messageRef = ref(database, `chatrooms/${roomId}/messages`);
         push(messageRef, {
             text: messageInput.value,
-            sender: user.uid,  // Use user.uid directly
+            sender: user.uid,
             timestamp: serverTimestamp()
         }).then(() => {
             messageInput.value = ''; // Clear input field
@@ -38,9 +38,27 @@ function listenForMessages(roomId) {
     messagesDiv.innerHTML = ''; // Clear previous messages
     onChildAdded(ref(database, `chatrooms/${roomId}/messages`), snapshot => {
         const msg = snapshot.val();
-        const msgDiv = document.createElement('div');
-        msgDiv.textContent = `${msg.sender}: ${msg.text}`;  // Display UID instead of username
-        messagesDiv.appendChild(msgDiv);
+        // Fetch username for the sender UID
+        fetchUsername(msg.sender)
+            .then(username => {
+                const msgDiv = document.createElement('div');
+                msgDiv.textContent = `${username}: ${msg.text}`;  // Display username instead of UID
+                messagesDiv.appendChild(msgDiv);
+            })
+            .catch(error => console.error('Error fetching username:', error));
+    });
+}
+
+// Function to fetch username for a given UID
+function fetchUsername(userId) {
+    return new Promise((resolve, reject) => {
+        const userRef = ref(database, `users/${userId}/username`);
+        onValue(userRef, snapshot => {
+            const username = snapshot.val();
+            resolve(username);
+        }, error => {
+            reject(error);
+        });
     });
 }
 
