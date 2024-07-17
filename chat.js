@@ -25,7 +25,7 @@ function sendMessage(roomId) {
         const messageRef = ref(database, `chatrooms/${roomId}/messages`);
         push(messageRef, {
             text: messageInput.value,
-            sender: user.uid,  // Use user.uid instead of user.displayName
+            sender: user.uid,  // Use user.uid directly
             timestamp: serverTimestamp()
         }).then(() => {
             messageInput.value = ''; // Clear input field
@@ -39,8 +39,7 @@ function listenForMessages(roomId) {
     onChildAdded(ref(database, `chatrooms/${roomId}/messages`), snapshot => {
         const msg = snapshot.val();
         const msgDiv = document.createElement('div');
-        const displayName = msg.username || 'Anonymous'; // Display username or 'Anonymous' if not set
-        msgDiv.textContent = `${displayName}: ${msg.text}`;  // Display username instead of userId
+        msgDiv.textContent = `${msg.sender}: ${msg.text}`;  // Display UID instead of username
         messagesDiv.appendChild(msgDiv);
     });
 }
