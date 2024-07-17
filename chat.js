@@ -25,7 +25,7 @@ function sendMessage(roomId) {
         const messageRef = ref(database, `chatrooms/${roomId}/messages`);
         push(messageRef, {
             text: messageInput.value,
-            username: user.displayName,  // Use displayName if available
+            sender: user.uid,  // Use user.uid instead of user.displayName
             timestamp: serverTimestamp()
         }).then(() => {
             messageInput.value = ''; // Clear input field
