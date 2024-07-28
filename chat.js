@@ -1,7 +1,8 @@
 // Import Firebase functions and modules
-import { auth, database } from './firebaseConfig.js';
+import { auth, database, storage } from './firebaseConfig.js';
 import { signOut } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js';
 import { ref, push, onChildAdded, serverTimestamp, set, onValue } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js';
+import { uploadBytes, getDownloadURL, ref as storageRef } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-storage.js';
 
 // Get DOM elements
 const messageInput = document.getElementById('messageInput');
@@ -15,6 +16,8 @@ const toggleSidebarButton = document.getElementById('toggleSidebar');
 const sidebar = document.getElementById('sidebar');
 const content = document.getElementById('content');
 const chatRoomList = document.getElementById('chatRoomList'); // Added for chat room list display
+const imageInput = document.getElementById('imageInput'); // Image input for file selection
+const uploadImageButton = document.getElementById('uploadImage'); // Button to upload image
 
 let currentRoomId = null; // Track the current chat room ID
 const usernames = {}; // Store usernames
@@ -35,16 +38,19 @@ function fetchUsernames() {
 fetchUsernames();
 
 // Function to send a message to a specific chat room
-function sendMessage(roomId) {
+function sendMessage(roomId, content, isImage = false) {
     const user = auth.currentUser;
-    if (user && messageInput.value.trim() !== '') {
+    if (user && content.trim() !== '') {
         const messageRef = ref(database, `chatrooms/${roomId}/messages`);
         push(messageRef, {
-            text: messageInput.value,
+            text: isImage ? null : content,
+            imageUrl: isImage ? content : null,
             sender: user.uid,  // Use user.uid directly
             timestamp: serverTimestamp()
         }).then(() => {
-            messageInput.value = ''; // Clear input field
+            if (!isImage) {
+                messageInput.value = ''; // Clear input field if it's a text message
+            }
         }).catch(error => console.error('Error sending message:', error));
     } else {
         console.error('User is not authenticated or message input is empty.');
@@ -58,7 +64,14 @@ function listenForMessages(roomId) {
         const msg = snapshot.val();
         const msgDiv = document.createElement('div');
         const senderUsername = usernames[msg.sender] || msg.sender; // Use username if available, otherwise UID
-        msgDiv.textContent = `${senderUsername}: ${msg.text}`;
+        if (msg.imageUrl) {
+            const img = document.createElement('img');
+            img.src = msg.imageUrl;
+            img.style.maxWidth = '100%'; // Adjust as needed
+            msgDiv.appendChild(img);
+        } else {
+            msgDiv.textContent = `${senderUsername}: ${msg.text}`;
+        }
         messagesDiv.appendChild(msgDiv);
         console.log('Message received:', msg); // Debug: Log received message
         console.log('Sender username:', senderUsername); // Debug: Log sender username
@@ -111,10 +124,20 @@ function displayChatRooms() {
     });
 }
 
+// Function to upload an image
+function uploadImage(roomId, file) {
+    const storageReference = storageRef(storage, `images/${Date.now()}_${file.name}`);
+    uploadBytes(storageReference, file).then(snapshot => {
+        return getDownloadURL(snapshot.ref);
+    }).then(downloadURL => {
+        sendMessage(roomId, downloadURL, true); // Send the image URL as a message
+    }).catch(error => console.error('Error uploading image:', error));
+}
+
 // Event listener for sending message (button click)
 sendMessageButton.addEventListener('click', () => {
     if (currentRoomId) {
-        sendMessage(currentRoomId);
+        sendMessage(currentRoomId, messageInput.value);
     } else {
         console.error('No chat room selected.');
     }
@@ -153,10 +176,19 @@ messageInput.addEventListener('keydown', event => {
     if (event.key === 'Enter') {
         event.preventDefault(); // Prevent default behavior (e.g., submitting a form)
         if (currentRoomId) {
-            sendMessage(currentRoomId);
+            sendMessage(currentRoomId, messageInput.value);
         } else {
             console.error('No chat room selected.');
         }
+    }
+});
+
+// Event listener for uploading an image
+uploadImageButton.addEventListener('click', () => {
+    if (currentRoomId && imageInput.files.length > 0) {
+        uploadImage(currentRoomId, imageInput.files[0]);
+    } else {
+        console.error('No chat room selected or no image selected.');
     }
 });
 
