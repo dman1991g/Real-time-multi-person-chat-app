@@ -2,6 +2,7 @@
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js';
 import { getAuth } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js';
 import { getDatabase } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js';
+import { getStorage } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-storage.js';  // Import getStorage
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -19,5 +20,6 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const database = getDatabase(app);
+const storage = getStorage(app);  // Initialize Firebase Storage
 
-export { app, auth, database };
+export { app, auth, database, storage };
