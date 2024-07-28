@@ -10,13 +10,11 @@
     <div id="app" class="app">
         <div id="sidebar" class="sidebar">
             <button id="toggleSidebar">Toggle Sidebar</button>
-            <!-- Chat Room Input and Buttons -->
             <div>
                 <input type="text" id="chatRoomInput" placeholder="Enter chat room ID">
                 <button id="createChatRoom">Create Chat Room</button>
                 <button id="joinChatRoom">Join Chat Room</button>
             </div>
-            <!-- List of created chat rooms -->
             <div id="chatRoomList"></div>
             <button id="signOut">Sign Out</button>
         </div>
@@ -25,26 +23,18 @@
             <div class="input-container">
                 <input type="text" id="messageInput" placeholder="Type a message">
                 <button id="sendMessage">Send</button>
-                <button id="uploadImageButton">Upload Image</button> <!-- Corrected button ID -->
+                <button id="toggleImageUpload">Upload Image</button>
             </div>
-            <!-- Image Upload Container -->
-            <div id="imageUploadContainer" style="display: none;">
-                <input type="file" id="imageInput" accept="image/*">
-                <button id="sendImage">Send Image</button>
-            </div>
+            <input type="file" id="imageInput" accept="image/*" style="display: none;">
+            <button id="sendImage" style="display: none;">Send Image</button>
         </div>
     </div>
 
-    <!-- Include Firebase SDKs from CDN -->
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-storage.js"></script>
-
-    <!-- Firebase Config Script -->
     <script type="module" src="firebaseConfig.js"></script>
-    
-    <!-- Your Main Script -->
     <script type="module" src="chat.js"></script>
 </body>
 </html>
