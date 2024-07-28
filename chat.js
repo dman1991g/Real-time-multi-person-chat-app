@@ -18,6 +18,7 @@ const content = document.getElementById('content');
 const chatRoomList = document.getElementById('chatRoomList'); // Added for chat room list display
 const imageInput = document.getElementById('imageInput'); // Image input for file selection
 const uploadImageButton = document.getElementById('sendImage'); // Button to upload image
+const toggleImageUploadButton = document.getElementById('toggleImageUpload'); // Button to toggle image upload
 
 let currentRoomId = null; // Track the current chat room ID
 const usernames = {}; // Store usernames
@@ -183,9 +184,17 @@ messageInput.addEventListener('keydown', event => {
     }
 });
 
+// Event listener for toggling image upload visibility
+toggleImageUploadButton.addEventListener('click', () => {
+    const isHidden = imageInput.style.display === 'none' || imageInput.style.display === '';
+    imageInput.style.display = isHidden ? 'block' : 'none'; // Toggle image input visibility
+    uploadImageButton.style.display = isHidden ? 'block' : 'none'; // Toggle send image button visibility
+});
+
 // Event listener for uploading an image
 uploadImageButton.addEventListener('click', () => {
     if (currentRoomId && imageInput.files.length > 0) {
+        console.log('Uploading image:', imageInput.files[0]);
         uploadImage(currentRoomId, imageInput.files[0]);
     } else {
         console.error('No chat room selected or no image selected.');
