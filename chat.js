@@ -17,7 +17,7 @@ const sidebar = document.getElementById('sidebar');
 const content = document.getElementById('content');
 const chatRoomList = document.getElementById('chatRoomList'); // Added for chat room list display
 const imageInput = document.getElementById('imageInput'); // Image input for file selection
-const uploadImageButton = document.getElementById('uploadImage'); // Button to upload image
+const uploadImageButton = document.getElementById('sendImage'); // Button to upload image
 
 let currentRoomId = null; // Track the current chat room ID
 const usernames = {}; // Store usernames
