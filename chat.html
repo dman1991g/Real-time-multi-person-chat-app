@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chat</title>
     <link rel="stylesheet" href="styles.css">
+    <!-- Emoji Picker CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@joeattardi/emoji-button@4.6.0/dist/emoji-button.css">
 </head>
 <body>
     <div id="app" class="app">
@@ -24,6 +26,8 @@
                 <input type="text" id="messageInput" placeholder="Type a message">
                 <button id="sendMessage">Send</button>
                 <button id="toggleImageUpload">Upload Image</button>
+                <!-- Emoji Picker Button -->
+                <button id="emojiButton">😊</button>
             </div>
             <input type="file" id="imageInput" accept="image/*" style="display: none;">
             <button id="sendImage" style="display: none;">Send Image</button>
@@ -36,5 +40,7 @@
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-storage.js"></script>
     <script type="module" src="firebaseConfig.js"></script>
     <script type="module" src="chat.js"></script>
+    <!-- Emoji Picker JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/@joeattardi/emoji-button@4.6.0/dist/emoji-button.min.js"></script>
 </body>
 </html>
