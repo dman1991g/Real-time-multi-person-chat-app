@@ -4,6 +4,9 @@ import { signOut } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.
 import { ref, push, onChildAdded, serverTimestamp, set, onValue } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js';
 import { uploadBytes, getDownloadURL, ref as storageRef } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-storage.js';
 
+// Import Emoji Picker
+import 'https://cdn.jsdelivr.net/npm/@joeattardi/emoji-button@4.6.2/dist/index.min.js';
+
 // Get DOM elements
 const messageInput = document.getElementById('messageInput');
 const sendMessageButton = document.getElementById('sendMessage');
@@ -19,6 +22,11 @@ const chatRoomList = document.getElementById('chatRoomList'); // Added for chat 
 const imageInput = document.getElementById('imageInput'); // Image input for file selection
 const uploadImageButton = document.getElementById('sendImage'); // Button to upload image
 const toggleImageUploadButton = document.getElementById('toggleImageUpload'); // Button to toggle image upload
+const emojiButton = document.createElement('button'); // Button to trigger emoji picker
+
+emojiButton.id = 'emojiButton';
+emojiButton.textContent = '😀';
+document.querySelector('.input-container').appendChild(emojiButton);
 
 let currentRoomId = null; // Track the current chat room ID
 const usernames = {}; // Store usernames
@@ -203,3 +211,15 @@ uploadImageButton.addEventListener('click', () => {
 
 // Display initial list of chat rooms
 displayChatRooms();
+
+// Initialize Emoji Picker
+const picker = new EmojiButton();
+
+picker.on('emoji', emoji => {
+    messageInput.value += emoji; // Add the selected emoji to the message input
+});
+
+// Event listener for showing the emoji picker
+emojiButton.addEventListener('click', () => {
+    picker.togglePicker(emojiButton); // Toggle the emoji picker
+});
