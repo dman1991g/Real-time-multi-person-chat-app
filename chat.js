@@ -205,13 +205,12 @@ uploadImageButton.addEventListener('click', () => {
 displayChatRooms();
 
 // Initialize Emoji Picker from window object
-const picker = new window.EmojiMart.Picker(); // Access from window object
+const pickerOptions = { onEmojiSelect: emoji => messageInput.value += emoji.native };
+const picker = new window.EmojiMart.Picker(pickerOptions);
 
-picker.on('emoji', emoji => {
-    messageInput.value += emoji.native; // Add the selected emoji to the message input
-});
+document.body.appendChild(picker);
 
 // Event listener for showing the emoji picker
 emojiButton.addEventListener('click', () => {
-    picker.togglePicker(emojiButton); // Toggle the emoji picker
+    picker.togglePicker(emojiButton);
 });
