@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chat</title>
     <link rel="stylesheet" href="styles.css">
-    <!-- Emoji Picker CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/emoji-mart/css/emoji-mart.css">
+    <!-- Emoji Mart CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/emoji-mart/css/emoji-mart.css">
 </head>
 <body>
     <div id="app" class="app">
@@ -28,8 +28,6 @@
                 <button id="toggleImageUpload">Upload Image</button>
                 <!-- Emoji Picker Button -->
                 <button id="emojiButton">😊</button>
-                <!-- Emoji Picker Container -->
-                <div id="emojiPicker" style="position: absolute; display: none;"></div>
             </div>
             <input type="file" id="imageInput" accept="image/*" style="display: none;">
             <button id="sendImage" style="display: none;">Send Image</button>
@@ -39,4 +37,14 @@
     <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-storage.js"></script>
+    
+    <!-- Emoji Mart JavaScript -->
+    <script src="https://unpkg.com/emoji-mart/dist/emoji-mart.js"></script>
+
+    <!-- Your Scripts -->
+    <script type="module" src="firebaseConfig.js"></script>
+    <script type="module" src="chat.js"></script>
+</body>
+</html>
