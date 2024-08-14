@@ -213,13 +213,13 @@ uploadImageButton.addEventListener('click', () => {
 displayChatRooms();
 
 // Initialize Emoji Picker
-const picker = new emojibutton();
+const picker = emojibutton();
 
 picker.on('emoji', emoji => {
     messageInput.value += emoji; // Add the selected emoji to the message input
 });
 
 // Event listener for showing the emoji picker
-emojiButton.addEventListener('click', () => {
-    picker.togglePicker(emojiButton); // Toggle the emoji picker
+emojibutton.addEventListener('click', () => {
+    picker.togglePicker(emojibutton); // Toggle the emoji picker
 });
