@@ -4,8 +4,10 @@ import { signOut } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.
 import { ref, push, onChildAdded, serverTimestamp, set, onValue } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js';
 import { uploadBytes, getDownloadURL, ref as storageRef } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-storage.js';
 
-// Import Emoji Picker
-import 'https://cdn.jsdelivr.net/npm/@joeattardi/emoji-button@4.6.2/dist/index.min.js';
+// No need to import Emoji Mart via JavaScript import statements
+// Import Emoji Mart library via CDN in HTML
+// <link rel="stylesheet" href="https://unpkg.com/emoji-mart/css/emoji-mart.css">
+// <script src="https://unpkg.com/emoji-mart/dist/emoji-mart.js"></script>
 
 // Get DOM elements
 const messageInput = document.getElementById('messageInput');
@@ -22,11 +24,7 @@ const chatRoomList = document.getElementById('chatRoomList'); // Added for chat 
 const imageInput = document.getElementById('imageInput'); // Image input for file selection
 const uploadImageButton = document.getElementById('sendImage'); // Button to upload image
 const toggleImageUploadButton = document.getElementById('toggleImageUpload'); // Button to toggle image upload
-const emojiButton = document.createElement('button'); // Button to trigger emoji picker
-
-emojiButton.id = 'emojiButton';
-emojiButton.textContent = '😀';
-document.querySelector('.input-container').appendChild(emojiButton);
+const emojiButton = document.getElementById('emojiButton'); // Emoji picker button
 
 let currentRoomId = null; // Track the current chat room ID
 const usernames = {}; // Store usernames
@@ -212,11 +210,11 @@ uploadImageButton.addEventListener('click', () => {
 // Display initial list of chat rooms
 displayChatRooms();
 
-// Initialize Emoji Picker
-const picker = new EmojiButton(); // Correct class name
-
-picker.on('emoji', emoji => {
-    messageInput.value += emoji; // Add the selected emoji to the message input
+// Initialize Emoji Mart Picker
+const picker = new EmojiMart.EmojiPicker({
+    theme: 'dark', // Optional: theme of the picker
+    emojiSize: 24, // Optional: size of the emojis
+    autoFocusSearch: true // Optional: automatically focus on the search input
 });
 
 // Event listener for showing the emoji picker
@@ -224,3 +222,7 @@ emojiButton.addEventListener('click', () => {
     picker.togglePicker(emojiButton); // Toggle the emoji picker
 });
 
+// Update the message input field with selected emoji
+picker.on('emoji', emoji => {
+    messageInput.value += emoji.native; // Add the selected emoji to the message input
+});
