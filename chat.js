@@ -205,8 +205,8 @@ uploadImageButton.addEventListener('click', () => {
 // Display initial list of chat rooms
 displayChatRooms();
 
-// Initialize Emoji Mart
-const picker = new window.EmojiMart.EmojiPicker(); // Access EmojiPicker from global window object
+// Initialize Emoji Picker from window object
+const picker = new window.EmojiMart.EmojiPicker(); // Access from window object
 
 picker.on('emoji', emoji => {
     messageInput.value += emoji; // Add the selected emoji to the message input
