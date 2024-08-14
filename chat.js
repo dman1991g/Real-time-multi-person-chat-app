@@ -19,11 +19,7 @@ const chatRoomList = document.getElementById('chatRoomList'); // Added for chat 
 const imageInput = document.getElementById('imageInput'); // Image input for file selection
 const uploadImageButton = document.getElementById('sendImage'); // Button to upload image
 const toggleImageUploadButton = document.getElementById('toggleImageUpload'); // Button to toggle image upload
-const emojiButton = document.createElement('button'); // Button to trigger emoji picker
-
-emojiButton.id = 'emojiButton';
-emojiButton.textContent = '😀';
-document.querySelector('.input-container').appendChild(emojiButton);
+const emojiButton = document.getElementById('emojiButton'); // Emoji button
 
 let currentRoomId = null; // Track the current chat room ID
 const usernames = {}; // Store usernames
@@ -209,20 +205,14 @@ uploadImageButton.addEventListener('click', () => {
 // Display initial list of chat rooms
 displayChatRooms();
 
-// Initialize Emoji Mart Picker
-document.addEventListener('DOMContentLoaded', () => {
-    // Ensure EmojiMart is available on the global window object
-    if (window.EmojiMart) {
-        const picker = new window.EmojiMart.Picker(); // Initialize EmojiMart Picker
-        picker.on('emoji', emoji => {
-            messageInput.value += emoji.native; // Add the selected emoji to the message input
-        });
-    
-        // Event listener for showing the emoji picker
-        emojiButton.addEventListener('click', () => {
-            picker.togglePicker(emojiButton); // Toggle the emoji picker
-        });
-    } else {
-        console.error('EmojiMart is not defined.');
-    }
+// Initialize Emoji Mart
+const picker = new window.EmojiMart.EmojiPicker(); // Access EmojiPicker from global window object
+
+picker.on('emoji', emoji => {
+    messageInput.value += emoji; // Add the selected emoji to the message input
+});
+
+// Event listener for showing the emoji picker
+emojiButton.addEventListener('click', () => {
+    picker.togglePicker(emojiButton); // Toggle the emoji picker
 });
