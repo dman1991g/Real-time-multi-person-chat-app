@@ -20,7 +20,7 @@ const imageInput = document.getElementById('imageInput');
 const uploadImageButton = document.getElementById('sendImage');
 const toggleImageUploadButton = document.getElementById('toggleImageUpload');
 const emojiButton = document.getElementById('emojiButton');
-const emojiPickerDiv = document.getElementById('emojiPicker'); // Get the emoji picker div
+const emojiPickerDiv = document.getElementById('emojiPicker'); // Added for the emoji picker
 
 let currentRoomId = null;
 const usernames = {};
@@ -206,24 +206,20 @@ uploadImageButton.addEventListener('click', () => {
 displayChatRooms();
 
 // Initialize Emoji Picker
-const pickerOptions = {
-    onEmojiSelect: emoji => {
-        messageInput.value += emoji.native; // Add the selected emoji to the message input
-        emojiPickerDiv.classList.add('hidden'); // Hide the picker after selecting an emoji
-    },
+const pickerOptions = { 
+    onEmojiSelect: emoji => messageInput.value += emoji.native 
 };
-
 const picker = new window.EmojiMart.Picker(pickerOptions);
-emojiPickerDiv.appendChild(picker);
+emojiPickerDiv.appendChild(picker); // Append picker to the emoji picker div
 
 // Event listener for showing the emoji picker
 emojiButton.addEventListener('click', () => {
-    emojiPickerDiv.classList.toggle('hidden'); // Toggle visibility of the emoji picker
+    emojiPickerDiv.classList.toggle('hidden'); // Toggle the hidden class
 });
 
-// Hide the emoji picker when clicking outside of it
+// Click event to hide emoji picker when clicking outside
 document.addEventListener('click', (event) => {
-    if (!emojiButton.contains(event.target) && !emojiPickerDiv.contains(event.target)) {
-        emojiPickerDiv.classList.add('hidden'); // Hide the picker
+    if (!emojiPickerDiv.contains(event.target) && event.target !== emojiButton) {
+        emojiPickerDiv.classList.add('hidden'); // Hide if clicked outside
     }
 });
