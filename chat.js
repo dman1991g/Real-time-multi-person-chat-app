@@ -24,9 +24,9 @@ const uploadImageButton = document.getElementById('sendImage'); // Button to upl
 const toggleImageUploadButton = document.getElementById('toggleImageUpload'); // Button to toggle image upload
 const emojiButton = document.createElement('button'); // Button to trigger emoji picker
 
-emojiButton.id = 'emojiButton';
+emojiButton.id = 'emojibutton';
 emojiButton.textContent = '😀';
-document.querySelector('.input-container').appendChild(emojiButton);
+document.querySelector('.input-container').appendChild(emojibutton);
 
 let currentRoomId = null; // Track the current chat room ID
 const usernames = {}; // Store usernames
@@ -213,7 +213,7 @@ uploadImageButton.addEventListener('click', () => {
 displayChatRooms();
 
 // Initialize Emoji Picker
-const picker = new emojiButton();
+const picker = new emojibutton();
 
 picker.on('emoji', emoji => {
     messageInput.value += emoji; // Add the selected emoji to the message input
