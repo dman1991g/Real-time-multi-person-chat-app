@@ -26,7 +26,6 @@ body {
     transition: width 0.3s ease; /* Smooth transition for width changes */
 }
 
-
 .content {
     flex: 1; /* Take remaining space */
     padding: 20px;
@@ -52,7 +51,7 @@ body {
 }
 
 #messageInput {
-    flex:1;
+    flex: 1;
     padding: 10px;
     box-sizing: border-box;
     margin-top: 20px;
@@ -102,4 +101,9 @@ button {
 
 button:hover {
     background-color: #0056b3;
+}
+
+/* Hidden class for toggling visibility */
+.hidden {
+    display: none;
 }
