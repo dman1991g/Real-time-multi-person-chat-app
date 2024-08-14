@@ -209,14 +209,20 @@ uploadImageButton.addEventListener('click', () => {
 // Display initial list of chat rooms
 displayChatRooms();
 
-// Initialize Emoji Picker
-const picker = new EmojiMart.Picker(); // Use EmojiMart.Picker from the global EmojiMart object
-
-picker.on('emoji', emoji => {
-    messageInput.value += emoji.native; // Add the selected emoji to the message input
-});
-
-// Event listener for showing the emoji picker
-emojiButton.addEventListener('click', () => {
-    picker.togglePicker(emojiButton); // Toggle the emoji picker
+// Initialize Emoji Mart Picker
+document.addEventListener('DOMContentLoaded', () => {
+    // Ensure EmojiMart is available on the global window object
+    if (window.EmojiMart) {
+        const picker = new window.EmojiMart.Picker(); // Initialize EmojiMart Picker
+        picker.on('emoji', emoji => {
+            messageInput.value += emoji.native; // Add the selected emoji to the message input
+        });
+    
+        // Event listener for showing the emoji picker
+        emojiButton.addEventListener('click', () => {
+            picker.togglePicker(emojiButton); // Toggle the emoji picker
+        });
+    } else {
+        console.error('EmojiMart is not defined.');
+    }
 });
