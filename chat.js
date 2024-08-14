@@ -20,6 +20,7 @@ const imageInput = document.getElementById('imageInput');
 const uploadImageButton = document.getElementById('sendImage');
 const toggleImageUploadButton = document.getElementById('toggleImageUpload');
 const emojiButton = document.getElementById('emojiButton');
+const emojiPickerDiv = document.getElementById('emojiPicker'); // Get the emoji picker div
 
 let currentRoomId = null;
 const usernames = {};
@@ -204,13 +205,25 @@ uploadImageButton.addEventListener('click', () => {
 // Display initial list of chat rooms
 displayChatRooms();
 
-// Initialize Emoji Picker from window object
-const pickerOptions = { onEmojiSelect: emoji => messageInput.value += emoji.native };
-const picker = new window.EmojiMart.Picker(pickerOptions);
+// Initialize Emoji Picker
+const pickerOptions = {
+    onEmojiSelect: emoji => {
+        messageInput.value += emoji.native; // Add the selected emoji to the message input
+        emojiPickerDiv.classList.add('hidden'); // Hide the picker after selecting an emoji
+    },
+};
 
-document.body.appendChild(picker);
+const picker = new window.EmojiMart.Picker(pickerOptions);
+emojiPickerDiv.appendChild(picker);
 
 // Event listener for showing the emoji picker
 emojiButton.addEventListener('click', () => {
-    picker.togglePicker(emojiButton);
+    emojiPickerDiv.classList.toggle('hidden'); // Toggle visibility of the emoji picker
+});
+
+// Hide the emoji picker when clicking outside of it
+document.addEventListener('click', (event) => {
+    if (!emojiButton.contains(event.target) && !emojiPickerDiv.contains(event.target)) {
+        emojiPickerDiv.classList.add('hidden'); // Hide the picker
+    }
 });
