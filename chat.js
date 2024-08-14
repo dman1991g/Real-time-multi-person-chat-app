@@ -15,28 +15,27 @@ const signOutButton = document.getElementById('signOut');
 const toggleSidebarButton = document.getElementById('toggleSidebar');
 const sidebar = document.getElementById('sidebar');
 const content = document.getElementById('content');
-const chatRoomList = document.getElementById('chatRoomList'); // Added for chat room list display
-const imageInput = document.getElementById('imageInput'); // Image input for file selection
-const uploadImageButton = document.getElementById('sendImage'); // Button to upload image
-const toggleImageUploadButton = document.getElementById('toggleImageUpload'); // Button to toggle image upload
-const emojiButton = document.getElementById('emojiButton'); // Emoji button
+const chatRoomList = document.getElementById('chatRoomList');
+const imageInput = document.getElementById('imageInput');
+const uploadImageButton = document.getElementById('sendImage');
+const toggleImageUploadButton = document.getElementById('toggleImageUpload');
+const emojiButton = document.getElementById('emojiButton');
 
-let currentRoomId = null; // Track the current chat room ID
-const usernames = {}; // Store usernames
+let currentRoomId = null;
+const usernames = {};
 
 // Function to fetch usernames from the database
 function fetchUsernames() {
     onValue(ref(database, 'usernames'), snapshot => {
         snapshot.forEach(childSnapshot => {
-            const username = childSnapshot.key; // Username is the key
-            const uid = childSnapshot.val(); // UID is the value
-            usernames[uid] = username; // Store each username with its corresponding UID
+            const username = childSnapshot.key;
+            const uid = childSnapshot.val();
+            usernames[uid] = username;
         });
-        console.log('Usernames fetched:', usernames); // Debug: Log fetched usernames
+        console.log('Usernames fetched:', usernames);
     }, error => console.error('Error fetching usernames:', error));
 }
 
-// Call fetchUsernames to initialize the usernames object
 fetchUsernames();
 
 // Function to send a message to a specific chat room
@@ -47,11 +46,11 @@ function sendMessage(roomId, content, isImage = false) {
         push(messageRef, {
             text: isImage ? null : content,
             imageUrl: isImage ? content : null,
-            sender: user.uid,  // Use user.uid directly
+            sender: user.uid,
             timestamp: serverTimestamp()
         }).then(() => {
             if (!isImage) {
-                messageInput.value = ''; // Clear input field if it's a text message
+                messageInput.value = '';
             }
         }).catch(error => console.error('Error sending message:', error));
     } else {
@@ -61,22 +60,22 @@ function sendMessage(roomId, content, isImage = false) {
 
 // Function to listen for messages in a specific chat room
 function listenForMessages(roomId) {
-    messagesDiv.innerHTML = ''; // Clear previous messages
+    messagesDiv.innerHTML = '';
     onChildAdded(ref(database, `chatrooms/${roomId}/messages`), snapshot => {
         const msg = snapshot.val();
         const msgDiv = document.createElement('div');
-        const senderUsername = usernames[msg.sender] || msg.sender; // Use username if available, otherwise UID
+        const senderUsername = usernames[msg.sender] || msg.sender;
         if (msg.imageUrl) {
             const img = document.createElement('img');
             img.src = msg.imageUrl;
-            img.style.maxWidth = '100%'; // Adjust as needed
+            img.style.maxWidth = '100%';
             msgDiv.appendChild(img);
         } else {
             msgDiv.textContent = `${senderUsername}: ${msg.text}`;
         }
         messagesDiv.appendChild(msgDiv);
-        console.log('Message received:', msg); // Debug: Log received message
-        console.log('Sender username:', senderUsername); // Debug: Log sender username
+        console.log('Message received:', msg);
+        console.log('Sender username:', senderUsername);
     });
 }
 
@@ -104,7 +103,7 @@ function joinChatRoom(roomId) {
         set(userRef, true).then(() => {
             console.log(`User ${userId} joined chat room ${roomId}.`);
             currentRoomId = roomId;
-            listenForMessages(roomId); // Start listening for messages in the chat room
+            listenForMessages(roomId);
         }).catch(error => console.error('Error joining chat room:', error));
     } else {
         console.error('No authenticated user.');
@@ -114,7 +113,7 @@ function joinChatRoom(roomId) {
 // Function to fetch and display chat room list
 function displayChatRooms() {
     onValue(ref(database, 'chatrooms'), snapshot => {
-        chatRoomList.innerHTML = ''; // Clear previous list
+        chatRoomList.innerHTML = '';
         snapshot.forEach(childSnapshot => {
             const roomId = childSnapshot.key;
             const roomDiv = document.createElement('div');
@@ -132,7 +131,7 @@ function uploadImage(roomId, file) {
     uploadBytes(storageReference, file).then(snapshot => {
         return getDownloadURL(snapshot.ref);
     }).then(downloadURL => {
-        sendMessage(roomId, downloadURL, true); // Send the image URL as a message
+        sendMessage(roomId, downloadURL, true);
     }).catch(error => console.error('Error uploading image:', error));
 }
 
@@ -169,14 +168,14 @@ signOutButton.addEventListener('click', () => {
 
 // Event listener for toggling sidebar visibility
 toggleSidebarButton.addEventListener('click', () => {
-    sidebar.classList.toggle('collapsed'); // Toggle the 'collapsed' class on sidebar
-    content.classList.toggle('expanded'); // Toggle the 'expanded' class on content
+    sidebar.classList.toggle('collapsed');
+    content.classList.toggle('expanded');
 });
 
 // Event listener for sending message (Enter key)
 messageInput.addEventListener('keydown', event => {
     if (event.key === 'Enter') {
-        event.preventDefault(); // Prevent default behavior (e.g., submitting a form)
+        event.preventDefault();
         if (currentRoomId) {
             sendMessage(currentRoomId, messageInput.value);
         } else {
@@ -188,8 +187,8 @@ messageInput.addEventListener('keydown', event => {
 // Event listener for toggling image upload visibility
 toggleImageUploadButton.addEventListener('click', () => {
     const isHidden = imageInput.style.display === 'none' || imageInput.style.display === '';
-    imageInput.style.display = isHidden ? 'block' : 'none'; // Toggle image input visibility
-    uploadImageButton.style.display = isHidden ? 'block' : 'none'; // Toggle send image button visibility
+    imageInput.style.display = isHidden ? 'block' : 'none';
+    uploadImageButton.style.display = isHidden ? 'block' : 'none';
 });
 
 // Event listener for uploading an image
@@ -206,10 +205,10 @@ uploadImageButton.addEventListener('click', () => {
 displayChatRooms();
 
 // Initialize Emoji Picker from window object
-const picker = new window.EmojiMart.EmojiPicker(); // Access from window object
+const picker = new window.EmojiMart.Picker(); // Access from window object
 
 picker.on('emoji', emoji => {
-    messageInput.value += emoji; // Add the selected emoji to the message input
+    messageInput.value += emoji.native; // Add the selected emoji to the message input
 });
 
 // Event listener for showing the emoji picker
