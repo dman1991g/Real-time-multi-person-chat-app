@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign In</title>
     <link rel="stylesheet" href="signup.css">
+    <link rel="manifest" href="manifest.json"> <!-- Link to the web app manifest -->
+    <meta name="theme-color" content="#3b4cca"> <!-- Theme color for the browser -->
 </head>
 <body>
     <div class="auth-container">
@@ -26,5 +28,18 @@
     
     <!-- Your Main Script -->
     <script type="module" src="signin.js"></script>
+
+    <!-- Register Service Worker -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('service-worker.js')
+                .then(registration => {
+                    console.log('Service Worker registered with scope:', registration.scope);
+                })
+                .catch(error => {
+                    console.error('Service Worker registration failed:', error);
+                });
+        }
+    </script>
 </body>
 </html>
