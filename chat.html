@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chat</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="manifest" href="manifest.json"> <!-- Link to the web app manifest -->
+    <meta name="theme-color" content="#3b4cca"> <!-- Theme color for the browser -->
     <!-- Emoji Mart CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/emoji-mart@latest/dist/emoji-mart.css">
 </head>
@@ -49,5 +51,17 @@
     <!-- Your Scripts -->
     <script type="module" src="firebaseConfig.js"></script>
     <script type="module" src="chat.js"></script>
+
+    <!-- Register Service Worker -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('service-worker.js')
+                .then(registration => {
+                    console.log('Service Worker registered with scope:', registration.scope);
+                })
+                .catch(error => {
+                    console.error('Service Worker registration failed:', error);
+                });
+    </script>
 </body>
 </html>
