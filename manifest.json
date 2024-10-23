@@ -2,7 +2,7 @@
   "name": "Real-time Chat App",
   "short_name": "ChatApp",
   "description": "A real-time chat application.",
-  "start_url": "/Real-time-multi-person-chat-app/index.html"
+  "start_url": "/Real-time-multi-person-chat-app/index.html",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#3b4cca",
