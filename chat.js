@@ -20,7 +20,7 @@ const imageInput = document.getElementById('imageInput');
 const uploadImageButton = document.getElementById('sendImage');
 const toggleImageUploadButton = document.getElementById('toggleImageUpload');
 const emojiButton = document.getElementById('emojiButton');
-const emojiPickerDiv = document.getElementById('emojiPicker'); // Added for the emoji picker
+const emojiPickerDiv = document.getElementById('emojiPicker');
 
 let currentRoomId = null;
 const usernames = {};
@@ -95,7 +95,7 @@ function createChatRoom() {
     }
 }
 
-// Function to join a chat room
+// Revised joinChatRoom function
 function joinChatRoom(roomId) {
     const user = auth.currentUser;
     if (user) {
@@ -105,6 +105,7 @@ function joinChatRoom(roomId) {
             console.log(`User ${userId} joined chat room ${roomId}.`);
             currentRoomId = roomId;
             listenForMessages(roomId);
+            pollForNewMessages(roomId); // Start polling after joining
         }).catch(error => console.error('Error joining chat room:', error));
     } else {
         console.error('No authenticated user.');
@@ -210,84 +211,67 @@ const pickerOptions = {
     onEmojiSelect: emoji => messageInput.value += emoji.native 
 };
 const picker = new window.EmojiMart.Picker(pickerOptions);
-emojiPickerDiv.appendChild(picker); // Append picker to the emoji picker div
+emojiPickerDiv.appendChild(picker);
 
 // Event listener for showing the emoji picker
 emojiButton.addEventListener('click', () => {
-    emojiPickerDiv.classList.toggle('hidden'); // Toggle the hidden class
+    emojiPickerDiv.classList.toggle('hidden');
 });
 
 // Click event to hide emoji picker when clicking outside
 document.addEventListener('click', (event) => {
     if (!emojiPickerDiv.contains(event.target) && event.target !== emojiButton) {
-        emojiPickerDiv.classList.add('hidden'); // Hide if clicked outside
+        emojiPickerDiv.classList.add('hidden');
     }
 });
-
-// Add this at the end of your existing JavaScript file
 
 // Polling interval in milliseconds (e.g., check every 5 seconds)
 const POLLING_INTERVAL = 5000;
 
-// Function to poll for new messages
-function pollForNewMessages() {
-    if (currentRoomId) {
-        const messagesRef = ref(database, `chatrooms/${currentRoomId}/messages`);
-        
-        // Get the last message timestamp for reference
-        onValue(messagesRef, (snapshot) => {
-            let lastMessageTimestamp = 0;
+// Updated pollForNewMessages function
+function pollForNewMessages(roomId) {
+    const messagesRef = ref(database, `chatrooms/${roomId}/messages`);
+    let lastMessageTimestamp = 0;
 
-            // Find the latest message timestamp
-            snapshot.forEach(childSnapshot => {
-                const msg = childSnapshot.val();
-                if (msg.timestamp && msg.timestamp > lastMessageTimestamp) {
-                    lastMessageTimestamp = msg.timestamp;
-                }
-            });
-
-            // Check for new messages every POLLING_INTERVAL
-            setInterval(() => {
-                onValue(messagesRef, (newSnapshot) => {
-                    newSnapshot.forEach(newChildSnapshot => {
-                        const newMsg = newChildSnapshot.val();
-                        if (newMsg.timestamp > lastMessageTimestamp) {
-                            // A new message is found
-                            lastMessageTimestamp = newMsg.timestamp;
-
-                            // Show notification
-                            showNotification(newMsg);
-                        }
-                    });
-                });
-            }, POLLING_INTERVAL);
-        });
-    }
-}
-
-// Function to show notifications
-function showNotification(message) {
-    if (Notification.permission === "granted") {
-        new Notification("New message", {
-            body: message.text ? message.text : "Image message",
-            icon: "path/to/icon.png" // Change to a valid icon path
-        });
-    } else if (Notification.permission !== "denied") {
-        Notification.requestPermission().then(permission => {
-            if (permission === "granted") {
-                showNotification(message);
+    onValue(messagesRef, (snapshot) => {
+        snapshot.forEach(childSnapshot => {
+            const msg = childSnapshot.val();
+            if (msg.timestamp && msg.timestamp > lastMessageTimestamp) {
+                lastMessageTimestamp = msg.timestamp;
             }
         });
+    });
+
+    // Poll for new messages every POLLING_INTERVAL
+    setInterval(() => {
+        onValue(messagesRef, (snapshot) => {
+            snapshot.forEach(childSnapshot => {
+                const msg = childSnapshot.val();
+                if (msg.timestamp > lastMessageTimestamp) {
+                    lastMessageTimestamp = msg.timestamp;
+                                        displayNotification('New message received', msg.text || 'Image received');
+                }
+            });
+        });
+    }, POLLING_INTERVAL);
+}
+
+// Function to display a notification (for demonstration, uses browser alert)
+function displayNotification(title, body) {
+    if (Notification.permission === 'granted') {
+        new Notification(title, { body });
+    } else if (Notification.permission !== 'denied') {
+        Notification.requestPermission().then(permission => {
+            if (permission === 'granted') {
+                new Notification(title, { body });
+            }
+        });
+    } else {
+        alert(`${title}: ${body}`); // Fallback if notifications are not permitted
     }
 }
 
-// Start polling for new messages when joining a chat room
-joinChatRoomButton.addEventListener('click', () => {
-    const roomId = chatRoomInput.value.trim();
-    if (roomId !== '') {
-        joinChatRoom(roomId);
-        pollForNewMessages(); // Start polling after joining
-    } else {
-        console.error('Please enter a chat room ID.');
-    }
-});
+// Request notification permission on load
+if (Notification.permission !== 'granted') {
+    Notification.requestPermission();
+}
