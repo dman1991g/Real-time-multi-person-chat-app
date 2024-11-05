@@ -62,22 +62,36 @@ function sendMessage(roomId, content, isImage = false) {
 // Function to listen for messages in a specific chat room
 function listenForMessages(roomId) {
     messagesDiv.innerHTML = '';
-    onChildAdded(ref(database, `chatrooms/${roomId}/messages`), snapshot => {
-        const msg = snapshot.val();
-        const msgDiv = document.createElement('div');
-        const senderUsername = usernames[msg.sender] || msg.sender;
-        if (msg.imageUrl) {
-            const img = document.createElement('img');
-            img.src = msg.imageUrl;
-            img.style.maxWidth = '100%';
-            msgDiv.appendChild(img);
+
+    // Check if the user is a member of the room before listening for messages
+    const user = auth.currentUser;
+    const memberRef = ref(database, `chatrooms/${roomId}/members/${user.uid}`);
+
+    onValue(memberRef, (memberSnapshot) => {
+        if (memberSnapshot.exists()) {
+            onChildAdded(ref(database, `chatrooms/${roomId}/messages`), snapshot => {
+                const msg = snapshot.val();
+                const msgDiv = document.createElement('div');
+                const senderUsername = usernames[msg.sender] || msg.sender;
+
+                if (msg.imageUrl) {
+                    const img = document.createElement('img');
+                    img.src = msg.imageUrl;
+                    img.style.maxWidth = '100%';
+                    msgDiv.appendChild(img);
+                } else {
+                    msgDiv.textContent = `${senderUsername}: ${msg.text}`;
+                }
+
+                messagesDiv.appendChild(msgDiv);
+                console.log('Message received:', msg);
+                console.log('Sender username:', senderUsername);
+            });
         } else {
-            msgDiv.textContent = `${senderUsername}: ${msg.text}`;
+            console.error("User is not a member of this room and cannot view messages.");
         }
-        messagesDiv.appendChild(msgDiv);
-        console.log('Message received:', msg);
-        console.log('Sender username:', senderUsername);
     });
+}
 }
 
 // Function to create a new chat room
