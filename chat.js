@@ -66,7 +66,6 @@ function listenForMessages(roomId) {
         const msg = snapshot.val();
         const msgDiv = document.createElement('div');
         const senderUsername = usernames[msg.sender] || msg.sender;
-
         if (msg.imageUrl) {
             const img = document.createElement('img');
             img.src = msg.imageUrl;
@@ -77,27 +76,8 @@ function listenForMessages(roomId) {
         }
         messagesDiv.appendChild(msgDiv);
         console.log('Message received:', msg);
+        console.log('Sender username:', senderUsername);
     });
-}
-
-// Function to check membership and listen for messages
-function checkMembershipAndListen(roomId) {
-    const user = auth.currentUser;
-    if (user) {
-        const memberRef = ref(database, `chatrooms/${roomId}/members/${user.uid}`);
-        onValue(memberRef, (snapshot) => {
-            if (snapshot.exists()) {
-                // User is a member; listen for messages
-                listenForMessages(roomId);
-            } else {
-                // User is not a member; do not listen for messages
-                messagesDiv.innerHTML = ''; // Clear messages if they were displayed before
-                console.log(`User ${user.uid} is not a member of room ${roomId}.`);
-            }
-        });
-    } else {
-        console.error('No authenticated user.');
-    }
 }
 
 // Function to create a new chat room
@@ -106,7 +86,7 @@ function createChatRoom() {
     if (roomId !== '') {
         set(ref(database, `chatrooms/${roomId}`), {
             messages: {},
-            members: {}
+            users: {}
         }).then(() => {
             console.log(`Chat room ${roomId} created.`);
         }).catch(error => console.error('Error creating chat room:', error));
@@ -120,11 +100,12 @@ function joinChatRoom(roomId) {
     const user = auth.currentUser;
     if (user) {
         const userId = user.uid;
-        const userRef = ref(database, `chatrooms/${roomId}/members/${userId}`);
+        const userRef = ref(database, `chatrooms/${roomId}/users/${userId}`);
         set(userRef, true).then(() => {
             console.log(`User ${userId} joined chat room ${roomId}.`);
             currentRoomId = roomId;
-            listenForMessages(roomId); // Start listening for messages
+            listenForMessages(roomId);
+            pollForNewMessages(roomId); // Start polling after joining
         }).catch(error => console.error('Error joining chat room:', error));
     } else {
         console.error('No authenticated user.');
@@ -140,10 +121,7 @@ function displayChatRooms() {
             const roomDiv = document.createElement('div');
             roomDiv.classList.add('room');
             roomDiv.textContent = roomId;
-            roomDiv.addEventListener('click', () => {
-                currentRoomId = roomId;
-                checkMembershipAndListen(roomId); // Check membership and listen for messages
-            });
+            roomDiv.addEventListener('click', () => joinChatRoom(roomId));
             chatRoomList.appendChild(roomDiv);
         });
     });
@@ -235,72 +213,65 @@ const pickerOptions = {
 const picker = new window.EmojiMart.Picker(pickerOptions);
 emojiPickerDiv.appendChild(picker);
 
-// Function to fetch usernames from the database
-function fetchUsernames() {
-    onValue(ref(database, 'usernames'), snapshot => {
-        snapshot.forEach(childSnapshot => {
-            const username = childSnapshot.key;
-            const uid = childSnapshot.val();
-            usernames[uid] = username;
-        });
-        console.log('Usernames fetched:', usernames);
-    }, error => console.error('Error fetching usernames:', error));
-}
-
-// Fetch usernames when the script loads
-fetchUsernames();
-
-// Add event listener for toggling the emoji picker
+// Event listener for showing the emoji picker
 emojiButton.addEventListener('click', () => {
-    emojiPickerDiv.style.display = emojiPickerDiv.style.display === 'block' ? 'none' : 'block';
+    emojiPickerDiv.classList.toggle('hidden');
 });
 
-// Hide the emoji picker when clicking outside
+// Click event to hide emoji picker when clicking outside
 document.addEventListener('click', (event) => {
-    if (!emojiButton.contains(event.target) && !emojiPickerDiv.contains(event.target)) {
-        emojiPickerDiv.style.display = 'none';
+    if (!emojiPickerDiv.contains(event.target) && event.target !== emojiButton) {
+        emojiPickerDiv.classList.add('hidden');
     }
 });
 
-// Function to clear the messages and stop listening
-function clearMessages() {
-    messagesDiv.innerHTML = '';
+// Polling interval in milliseconds (e.g., check every 5 seconds)
+const POLLING_INTERVAL = 5000;
+
+// Updated pollForNewMessages function
+function pollForNewMessages(roomId) {
+    const messagesRef = ref(database, `chatrooms/${roomId}/messages`);
+    let lastMessageTimestamp = 0;
+
+    onValue(messagesRef, (snapshot) => {
+        snapshot.forEach(childSnapshot => {
+            const msg = childSnapshot.val();
+            if (msg.timestamp && msg.timestamp > lastMessageTimestamp) {
+                lastMessageTimestamp = msg.timestamp;
+            }
+        });
+    });
+
+    // Poll for new messages every POLLING_INTERVAL
+    setInterval(() => {
+        onValue(messagesRef, (snapshot) => {
+            snapshot.forEach(childSnapshot => {
+                const msg = childSnapshot.val();
+                if (msg.timestamp > lastMessageTimestamp) {
+                    lastMessageTimestamp = msg.timestamp;
+                                        displayNotification('New message received', msg.text || 'Image received');
+                }
+            });
+        });
+    }, POLLING_INTERVAL);
 }
 
-// Function to join a chat room with membership handling
-function joinChatRoom(roomId) {
-    const user = auth.currentUser;
-    if (user) {
-        const userId = user.uid;
-        const userRef = ref(database, `chatrooms/${roomId}/members/${userId}`);
-        set(userRef, true).then(() => {
-            console.log(`User ${userId} joined chat room ${roomId}.`);
-            currentRoomId = roomId;
-            checkMembershipAndListen(roomId); // Check membership and listen for messages
-        }).catch(error => console.error('Error joining chat room:', error));
+// Function to display a notification (for demonstration, uses browser alert)
+function displayNotification(title, body) {
+    if (Notification.permission === 'granted') {
+        new Notification(title, { body });
+    } else if (Notification.permission !== 'denied') {
+        Notification.requestPermission().then(permission => {
+            if (permission === 'granted') {
+                new Notification(title, { body });
+            }
+        });
     } else {
-        console.error('No authenticated user.');
+        alert(`${title}: ${body}`); // Fallback if notifications are not permitted
     }
 }
 
-// Event listener for joining a chat room
-joinChatRoomButton.addEventListener('click', () => {
-    const roomId = chatRoomInput.value.trim();
-    if (roomId !== '') {
-        joinChatRoom(roomId);
-    } else {
-        console.error('Please enter a chat room ID.');
-    }
-});
-
-// Function to log the user out
-signOutButton.addEventListener('click', () => {
-    signOut(auth)
-        .then(() => {
-            window.location.href = 'index.html'; // Redirect to sign-in page
-        })
-        .catch(error => console.error('Error signing out:', error));
-});
-
-// Display the initial list of chat rooms
-displayChatRooms();
+// Request notification permission on load
+if (Notification.permission !== 'granted') {
+    Notification.requestPermission();
+}
